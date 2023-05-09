@@ -3,7 +3,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../blocs/theme/theme_cubit.dart';
+import '../../../blocs/appState/appState_cubit.dart';
+
+
 
 class ThemeScreen extends StatelessWidget {
   ThemeScreen({super.key});
@@ -47,7 +49,7 @@ class ThemeItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     
-    final themeCubit = BlocProvider.of<ThemeCubit>(context, listen: false);
+    final themeCubit = BlocProvider.of<AppStateCubit>(context, listen: false);
     return Card(
       child: InkWell(
         onTap: () {
