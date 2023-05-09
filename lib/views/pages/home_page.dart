@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../widgets/add_task_bottomsheet.dart';
-import '../widgets/more_bottom_sheet.dart';
+import '../widgets/bottomsheet/add_task_bottomsheet.dart';
+import '../widgets/bottomsheet/more_bottom_sheet.dart';
+import 'today_list.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -55,7 +56,7 @@ class HomePage extends StatelessWidget {
             ),
           ),
           // if (currentListId == 'today')
-          //   const TodayListBody()
+            const TodayListBody()
           // else if (currentListId == 'favorites')
           //   const FavoritesListBody()
           // else
