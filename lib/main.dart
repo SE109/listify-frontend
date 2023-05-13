@@ -14,9 +14,12 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      lazy: false,
-      create: (context) => TaskBloc()..add(TaskLoadEvent()),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => TaskBloc()..add(TaskLoadEvent()),
+        )
+      ],
       child: MaterialApp(
         title: 'Listify',
         debugShowCheckedModeBanner: false,

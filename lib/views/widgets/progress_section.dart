@@ -41,9 +41,9 @@ class ProgressSection extends StatelessWidget {
                 padding: EdgeInsets.zero,
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
-                itemCount: state.gTasks[0].taskList.length,
+                itemCount: 1,
                 itemBuilder: (context, index) => DateCategorizedTasks(
-                  tasks: state.gTasks[0].taskList,
+                  tasks: state.tasksDisplay,
                   // date: dates[index],
                 ),
               ),

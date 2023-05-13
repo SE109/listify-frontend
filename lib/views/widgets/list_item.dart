@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:listify/blocs/task/task_bloc.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/task.dart';
+import '../pages/task_detail/task_detail.dart';
 
 class ListItem extends StatelessWidget {
   const ListItem({
@@ -50,38 +53,52 @@ class TwoLineListTile extends StatelessWidget {
         context,
         MaterialPageRoute(
           builder: (context) => ChangeNotifierProvider(
-            create: (_) {},
-            child:Container() 
-            // const TaskContentScreen(),
+            create: (_) {
+              BlocProvider.of<TaskBloc>(context)
+                  .add(TaskChangeCurrentEvent(task: task));
+            },
+            child:
+                // Container()
+                TaskContentScreen(
+              task: task, 
+            ),
           ),
         ),
       ),
       child: ListTile(
         leading: IconButton(
-          icon: false
+          icon: task.isCompleted
               ? const Icon(Icons.check_box_rounded)
               : const Icon(Icons.check_box_outline_blank_rounded),
-          onPressed: () {},
+          onPressed: () {
+            BlocProvider.of<TaskBloc>(context)
+                .add(TaskMarkCompletedEvent(task: task));
+          },
         ),
         title: Text(
           task.title,
           style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                decoration: false ? TextDecoration.lineThrough : null,
+                decoration:
+                    task.isCompleted ? TextDecoration.lineThrough : null,
                 decorationThickness: 2,
               ),
         ),
         subtitle: Text(
           task.description,
           style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                decoration: false ? TextDecoration.lineThrough : null,
+                decoration:
+                    task.isCompleted ? TextDecoration.lineThrough : null,
                 decorationThickness: 1.5,
               ),
         ),
         trailing: IconButton(
-          icon: false
+          icon: task.isFavorited
               ? const Icon(Icons.star_rounded)
               : const Icon(Icons.star_border_rounded),
-          onPressed: () {},
+          onPressed: () {
+            BlocProvider.of<TaskBloc>(context)
+                .add(TaskFavoriteEvent(task: task));
+          },
         ),
       ),
     );
@@ -102,40 +119,48 @@ class OneLineListTile extends StatelessWidget {
     // final tasksController = context.watch<TasksController>();
 
     return GestureDetector(
-      onTap: () {} 
-      // => Navigator.push(
-      //   context,
-      //   MaterialPageRoute(
-      //     builder: (context) => ChangeNotifierProvider(
-      //       create: (_) => TaskContentController(
-      //         taskListsController,
-      //         tasksController,
-      //         task.id,
-      //       )..loadData(),
-      //       child: const TaskContentScreen(),
-      //     ),
-      //   ),
-      // )
-      ,
+      onTap: () => Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ChangeNotifierProvider(
+            create: (_) {
+              BlocProvider.of<TaskBloc>(context)
+                  .add(TaskChangeCurrentEvent(task: task));
+            },
+            child:
+                // Container()
+                TaskContentScreen(
+              task: task,
+            ),
+          ),
+        ),
+      ),
       child: ListTile(
         leading: IconButton(
-          icon: false
+          icon: task.isCompleted
               ? const Icon(Icons.check_box_rounded)
               : const Icon(Icons.check_box_outline_blank_rounded),
-          onPressed: () {},
+          onPressed: () {
+            BlocProvider.of<TaskBloc>(context)
+                .add(TaskMarkCompletedEvent(task: task));
+          },
         ),
         title: Text(
           task.title,
           style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                decoration: false  ? TextDecoration.lineThrough : null,
+                decoration:
+                    task.isCompleted ? TextDecoration.lineThrough : null,
                 decorationThickness: 2,
               ),
         ),
         trailing: IconButton(
-          icon: false
+          icon: task.isFavorited
               ? const Icon(Icons.star_rounded)
               : const Icon(Icons.star_border_rounded),
-          onPressed: () {},
+          onPressed: () {
+            BlocProvider.of<TaskBloc>(context)
+                .add(TaskFavoriteEvent(task: task));
+          },
         ),
       ),
     );
