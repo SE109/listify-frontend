@@ -3,8 +3,8 @@ class User {
     final String firstName;
     final String lastName;
     final String avatar;
-    final int phoneNum;
-    final dynamic dateOfBirth;
+    final String phoneNum;
+    final DateTime dateOfBirth;
 
     User({
         required this.mail,
@@ -12,7 +12,7 @@ class User {
         required this.lastName,
         required this.avatar,
         required this.phoneNum,
-        this.dateOfBirth,
+        required this.dateOfBirth,
     });
 
     User copyWith({
@@ -20,8 +20,8 @@ class User {
         String? firstName,
         String? lastName,
         String? avatar,
-        int? phoneNum,
-        dynamic dateOfBirth,
+        String? phoneNum,
+        DateTime? dateOfBirth,
     }) => 
         User(
             mail: mail ?? this.mail,
@@ -38,7 +38,7 @@ class User {
         lastName: json["lastName"],
         avatar: json["avatar"],
         phoneNum: json["phoneNum"],
-        dateOfBirth: json["dateOfBirth"],
+        dateOfBirth: DateTime.parse(json["dateOfBirth"]),
     );
 
     Map<String, dynamic> toJson() => {
@@ -47,6 +47,6 @@ class User {
         "lastName": lastName,
         "avatar": avatar,
         "phoneNum": phoneNum,
-        "dateOfBirth": dateOfBirth,
+        "dateOfBirth": dateOfBirth.toIso8601String(),
     };
 }

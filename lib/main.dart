@@ -5,6 +5,7 @@ import 'package:listify/routes/app_routes.dart';
 import 'package:listify/views/pages/home_page.dart';
 import 'package:listify/views/pages/login_page.dart';
 import 'package:listify/views/pages/profile_page.dart';
+import 'package:listify/views/pages/change_pass_page.dart';
 import 'package:listify/views/pages/update_profile_page.dart';
 
 import 'blocs/auth/auth_bloc.dart';
@@ -33,17 +34,18 @@ class MyApp extends StatelessWidget {
           body: BlocBuilder<AuthBloc,AuthState>(
             builder: (context1, state) {
               if(state is AuthLoading){
-                return const CircularProgressIndicator();
+                return Center(child: const CircularProgressIndicator());
               }
               else if(state is AuthAuthenticated){
-                return HomePage(userRepository: userRepository,);
-                // return UpdateProfilePage();
+                // return HomePage(userRepository: userRepository,);
+                // return ChangePassPage();
+                return ProfilePage();
               }
               else if(state is AuthUnAuthenticated){
                 return LoginPage(userRepository: userRepository,);
               }
               else{
-                return const CircularProgressIndicator();
+                return Center(child: const CircularProgressIndicator());
               }
           },),
         ),
