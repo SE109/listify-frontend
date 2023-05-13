@@ -66,10 +66,13 @@ class _TaskContentScreenState extends State<TaskContentScreen> {
             },
           ),
           IconButton(
-            onPressed: () {},
-            // => taskContentController
-            //     .deleteTask()
-            //     .then((_) => Navigator.pop(context)),
+            onPressed: () async {
+              Navigator.pop(context);
+              await Future.delayed(
+                  Duration(milliseconds: 300),
+                  () => BlocProvider.of<TaskBloc>(context)
+                      .add(TaskDeleteEvent()));
+            },
             icon: const Icon(Icons.delete_rounded),
           ),
         ],

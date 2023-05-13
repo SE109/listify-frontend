@@ -23,6 +23,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
     on<TaskSaveChangeTaskEvent>(_onSaveChange);
     on<TaskChangeGTaskEvent>(_onChangeCurrentGTask);
     on<TaskRefreshEvent>(_onRefresh);
+    on<TaskDeleteEvent>(_onDeleteTask);
   }
 
   FutureOr<void> _loadAllTask(
@@ -217,6 +218,32 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
       final currentState = state as TaskLoaded;
 
       emit(currentState.copyWith(refresh: currentState.refresh + 1));
+    }
+  }
+
+  FutureOr<void> _onDeleteTask(
+      TaskDeleteEvent event, Emitter<TaskState> emit) async {
+    if (state is TaskLoaded) {
+      final currentState = state as TaskLoaded;
+
+      Dio dio = Dio();
+
+      print(currentState.currentTask!.id);
+
+      await dio.delete(
+        'http://10.0.2.2:5000/task/${currentState.currentTask!.id}',
+        options: Options(
+          headers: {
+            "Authorization":
+                "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Im1haWwiOiIyMDUyMTM2NkBnbS51aXQuZWR1LnZuIn0sImlhdCI6MTY4Mzk1MTcyMiwiZXhwIjoxNjg0MDM4MTIyfQ._3tKY9x9DJqNkg67IlIarZ637djopqqKfwC_N6bsPK0"
+          },
+        ),
+      );
+
+      emit(currentState.copyWith(
+          currentTask: null, refresh: currentState.refresh + 1));
+
+      add(TaskLoadEvent());
     }
   }
 }

@@ -66,3 +66,5 @@ class TaskChangeGTaskEvent extends TaskEvent {
 }
 
 class TaskRefreshEvent extends TaskEvent {}
+
+class TaskDeleteEvent extends TaskEvent {}
