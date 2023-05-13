@@ -10,6 +10,8 @@ import 'package:listify/views/pages/update_profile_page.dart';
 
 import 'blocs/auth/auth_bloc.dart';
 
+import 'blocs/task/task_bloc.dart';
+
 void main() {
   final UserRepository userRepository= UserRepository();
   Bloc.observer = SimpleBlocObserver();
@@ -21,8 +23,13 @@ class MyApp extends StatelessWidget {
   final UserRepository userRepository;
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => AuthBloc(userRepository)..add(AppStarted()),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => TaskBloc()..add(TaskLoadEvent()),
+        ),
+        BlocProvider(create: (context) => AuthBloc(userRepository)..add(AppStarted()))
+      ],
       child: MaterialApp(
         title: 'Listify',
         debugShowCheckedModeBanner: false,
@@ -37,9 +44,8 @@ class MyApp extends StatelessWidget {
                 return Center(child: const CircularProgressIndicator());
               }
               else if(state is AuthAuthenticated){
-                // return HomePage(userRepository: userRepository,);
-                // return ChangePassPage();
-                return ProfilePage();
+                return HomePage();
+                // return UpdateProfilePage();
               }
               else if(state is AuthUnAuthenticated){
                 return LoginPage(userRepository: userRepository,);
