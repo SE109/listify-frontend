@@ -24,6 +24,8 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
     on<TaskChangeGTaskEvent>(_onChangeCurrentGTask);
     on<TaskRefreshEvent>(_onRefresh);
     on<TaskDeleteEvent>(_onDeleteTask);
+    on<TaskChangeGTaskListEvent>(_onChangeGTaskList);
+    on<TaskAddGTaskEvent>(_onAddGTask);
   }
 
   FutureOr<void> _loadAllTask(
@@ -31,10 +33,10 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
     // print()
     Dio dio = Dio();
 
-    final response = await dio.get('http://10.0.2.2:5000/gtask',
+    final response = await dio.get('http://192.168.1.231:5000/gtask',
         options: Options(headers: {
           "Authorization":
-              "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Im1haWwiOiIyMDUyMTM2NkBnbS51aXQuZWR1LnZuIn0sImlhdCI6MTY4Mzk1MTcyMiwiZXhwIjoxNjg0MDM4MTIyfQ._3tKY9x9DJqNkg67IlIarZ637djopqqKfwC_N6bsPK0"
+              "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Im1haWwiOiIyMDUyMTM2NkBnbS51aXQuZWR1LnZuIn0sImlhdCI6MTY4Mzk4NzcyNCwiZXhwIjoxNjg0MDc0MTI0fQ.8IuUNj0Iqy5IvlbbD4fZ_EbgZsQxucD9W6nKU3F0CQ8"
         }));
 
     // print(response.data['data']);
@@ -43,10 +45,9 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
     // print(gTasks[0].taskList[0].description);
 
     final List<Task> todayTasks = gTasks
-        .where(
+        .firstWhere(
           (element) => element.name == 'Today',
         )
-        .first
         .taskList;
 
     todayTasks.forEach(
@@ -73,13 +74,13 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
     if (state is TaskLoaded) {
       final currentState = state as TaskLoaded;
       Dio dio = Dio();
-      final String url = 'http://10.0.2.2:5000/task';
+      final String url = 'http://192.168.1.231:5000/task';
 
       final data = {
         "title": event.title,
         "description": event.description,
         "fromDate": DateTime.now().toUtc().toString(),
-        "toDate": DateTime.now().toUtc().toString(),
+        "toDate": event.toDate.toUtc().toString(),
       };
 
       print(DateTime.now().toUtc());
@@ -87,16 +88,17 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
       final response = await dio.post(url,
           options: Options(headers: {
             "Authorization":
-                "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Im1haWwiOiIyMDUyMTM2NkBnbS51aXQuZWR1LnZuIn0sImlhdCI6MTY4Mzk1MTcyMiwiZXhwIjoxNjg0MDM4MTIyfQ._3tKY9x9DJqNkg67IlIarZ637djopqqKfwC_N6bsPK0"
+                "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Im1haWwiOiIyMDUyMTM2NkBnbS51aXQuZWR1LnZuIn0sImlhdCI6MTY4Mzk4NzcyNCwiZXhwIjoxNjg0MDc0MTI0fQ.8IuUNj0Iqy5IvlbbD4fZ_EbgZsQxucD9W6nKU3F0CQ8"
           }),
           data: data);
 
       print(response.data['data']['id']);
 
-      dio.put('http://10.0.2.2:5000/task/${response.data['data']['id']}/move',
+      dio.put(
+          'http://192.168.1.231:5000/task/${response.data['data']['id']}/move',
           options: Options(headers: {
             "Authorization":
-                "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Im1haWwiOiIyMDUyMTM2NkBnbS51aXQuZWR1LnZuIn0sImlhdCI6MTY4Mzk1MTcyMiwiZXhwIjoxNjg0MDM4MTIyfQ._3tKY9x9DJqNkg67IlIarZ637djopqqKfwC_N6bsPK0"
+                "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Im1haWwiOiIyMDUyMTM2NkBnbS51aXQuZWR1LnZuIn0sImlhdCI6MTY4Mzk4NzcyNCwiZXhwIjoxNjg0MDc0MTI0fQ.8IuUNj0Iqy5IvlbbD4fZ_EbgZsQxucD9W6nKU3F0CQ8"
           }),
           data: {
             "groupTaskId": currentState.gTasks
@@ -113,10 +115,10 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
   FutureOr<void> _onMarkDone(
       TaskMarkCompletedEvent event, Emitter<TaskState> emit) async {
     Dio dio = Dio();
-    await dio.put('http://10.0.2.2:5000/task/${event.task.id}/toggle-mark',
+    await dio.put('http://192.168.1.231:5000/task/${event.task.id}/toggle-mark',
         options: Options(headers: {
           "Authorization":
-              "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Im1haWwiOiIyMDUyMTM2NkBnbS51aXQuZWR1LnZuIn0sImlhdCI6MTY4Mzk1MTcyMiwiZXhwIjoxNjg0MDM4MTIyfQ._3tKY9x9DJqNkg67IlIarZ637djopqqKfwC_N6bsPK0"
+              "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Im1haWwiOiIyMDUyMTM2NkBnbS51aXQuZWR1LnZuIn0sImlhdCI6MTY4Mzk4NzcyNCwiZXhwIjoxNjg0MDc0MTI0fQ.8IuUNj0Iqy5IvlbbD4fZ_EbgZsQxucD9W6nKU3F0CQ8"
         }));
     add(TaskLoadEvent());
   }
@@ -124,10 +126,10 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
   FutureOr<void> _onFavorite(
       TaskFavoriteEvent event, Emitter<TaskState> emit) async {
     Dio dio = Dio();
-    await dio.put('http://10.0.2.2:5000/task/${event.task.id}/toggle-favo',
+    await dio.put('http://192.168.1.231:5000/task/${event.task.id}/toggle-favo',
         options: Options(headers: {
           "Authorization":
-              "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Im1haWwiOiIyMDUyMTM2NkBnbS51aXQuZWR1LnZuIn0sImlhdCI6MTY4Mzk1MTcyMiwiZXhwIjoxNjg0MDM4MTIyfQ._3tKY9x9DJqNkg67IlIarZ637djopqqKfwC_N6bsPK0"
+              "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Im1haWwiOiIyMDUyMTM2NkBnbS51aXQuZWR1LnZuIn0sImlhdCI6MTY4Mzk4NzcyNCwiZXhwIjoxNjg0MDc0MTI0fQ.8IuUNj0Iqy5IvlbbD4fZ_EbgZsQxucD9W6nKU3F0CQ8"
         }));
     add(TaskLoadEvent());
   }
@@ -168,11 +170,11 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
       if (gTask.name != currentState.currentGTask) {
         // http://localhost:5000/task/104/move
         await dio.put(
-            'http://10.0.2.2:5000/task/${currentState.currentTask!.id}/move',
+            'http://192.168.1.231:5000/task/${currentState.currentTask!.id}/move',
             options: Options(
               headers: {
                 "Authorization":
-                    "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Im1haWwiOiIyMDUyMTM2NkBnbS51aXQuZWR1LnZuIn0sImlhdCI6MTY4Mzk1MTcyMiwiZXhwIjoxNjg0MDM4MTIyfQ._3tKY9x9DJqNkg67IlIarZ637djopqqKfwC_N6bsPK0"
+                    "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Im1haWwiOiIyMDUyMTM2NkBnbS51aXQuZWR1LnZuIn0sImlhdCI6MTY4Mzk4NzcyNCwiZXhwIjoxNjg0MDc0MTI0fQ.8IuUNj0Iqy5IvlbbD4fZ_EbgZsQxucD9W6nKU3F0CQ8"
               },
             ),
             data: {
@@ -183,14 +185,15 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
             });
       }
 
-      await dio.put('http://10.0.2.2:5000/task/${currentState.currentTask!.id}',
-          options: Options(
-            headers: {
-              "Authorization":
-                  "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Im1haWwiOiIyMDUyMTM2NkBnbS51aXQuZWR1LnZuIn0sImlhdCI6MTY4Mzk1MTcyMiwiZXhwIjoxNjg0MDM4MTIyfQ._3tKY9x9DJqNkg67IlIarZ637djopqqKfwC_N6bsPK0"
-            },
-          ),
-          data: {
+      await dio
+          .put('http://192.168.1.231:5000/task/${currentState.currentTask!.id}',
+              options: Options(
+                headers: {
+                  "Authorization":
+                      "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Im1haWwiOiIyMDUyMTM2NkBnbS51aXQuZWR1LnZuIn0sImlhdCI6MTY4Mzk4NzcyNCwiZXhwIjoxNjg0MDc0MTI0fQ.8IuUNj0Iqy5IvlbbD4fZ_EbgZsQxucD9W6nKU3F0CQ8"
+                },
+              ),
+              data: {
             "title": event.title,
             "description": event.detail,
             "fromDate": currentState.currentTask!.fromDate.toUtc().toString(),
@@ -231,11 +234,11 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
       print(currentState.currentTask!.id);
 
       await dio.delete(
-        'http://10.0.2.2:5000/task/${currentState.currentTask!.id}',
+        'http://192.168.1.231:5000/task/${currentState.currentTask!.id}',
         options: Options(
           headers: {
             "Authorization":
-                "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Im1haWwiOiIyMDUyMTM2NkBnbS51aXQuZWR1LnZuIn0sImlhdCI6MTY4Mzk1MTcyMiwiZXhwIjoxNjg0MDM4MTIyfQ._3tKY9x9DJqNkg67IlIarZ637djopqqKfwC_N6bsPK0"
+                "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Im1haWwiOiIyMDUyMTM2NkBnbS51aXQuZWR1LnZuIn0sImlhdCI6MTY4Mzk4NzcyNCwiZXhwIjoxNjg0MDc0MTI0fQ.8IuUNj0Iqy5IvlbbD4fZ_EbgZsQxucD9W6nKU3F0CQ8"
           },
         ),
       );
@@ -245,5 +248,42 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
 
       add(TaskLoadEvent());
     }
+  }
+
+  FutureOr<void> _onChangeGTaskList(
+      TaskChangeGTaskListEvent event, Emitter<TaskState> emit) {
+    if (state is TaskLoaded) {
+      final currentState = state as TaskLoaded;
+
+      if (event.gTaskId == -1) {
+      } else {
+        final resultList = currentState.gTasks
+            .firstWhere((element) => element.id == event.gTaskId)
+            .taskList;
+
+        final name = currentState.gTasks
+            .firstWhere((element) => element.id == event.gTaskId)
+            .name;
+
+        emit(currentState.copyWith(
+            tasksDisplay: resultList, gTaskSelected: name));
+      }
+    }
+  }
+
+  FutureOr<void> _onAddGTask(
+      TaskAddGTaskEvent event, Emitter<TaskState> emit) async {
+    final Dio dio = Dio();
+
+    await dio.post('http://192.168.1.231:5000/gtask',
+        options: Options(
+          headers: {
+            "Authorization":
+                "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Im1haWwiOiIyMDUyMTM2NkBnbS51aXQuZWR1LnZuIn0sImlhdCI6MTY4Mzk4NzcyNCwiZXhwIjoxNjg0MDc0MTI0fQ.8IuUNj0Iqy5IvlbbD4fZ_EbgZsQxucD9W6nKU3F0CQ8"
+          },
+        ),
+        data: {"name": event.name});
+
+    add(TaskLoadEvent());
   }
 }

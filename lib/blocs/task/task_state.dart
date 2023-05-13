@@ -12,14 +12,14 @@ class TaskLoading extends TaskState {}
 class TaskLoaded extends TaskState {
   final List<GTask> gTasks;
   final List<Task> tasksDisplay;
-  final String taskSelected;
+  final String gTaskSelected;
   final int refresh;
   Task? currentTask;
   String? currentGTask;
 
   TaskLoaded(
       {required this.gTasks,
-      this.taskSelected = 'Today',
+      this.gTaskSelected = 'Today',
       required this.tasksDisplay,
       required this.refresh,
       this.currentTask,
@@ -28,7 +28,7 @@ class TaskLoaded extends TaskState {
   TaskLoaded copyWith({
     final List<GTask>? gTasks,
     final List<Task>? tasksDisplay,
-    final String? taskSelected,
+    final String? gTaskSelected,
     final Task? currentTask,
     final int? refresh,
     final String? currentGTask,
@@ -36,7 +36,7 @@ class TaskLoaded extends TaskState {
     return TaskLoaded(
       gTasks: gTasks ?? this.gTasks,
       tasksDisplay: tasksDisplay ?? this.tasksDisplay,
-      taskSelected: taskSelected ?? this.taskSelected,
+      gTaskSelected: gTaskSelected ?? this.gTaskSelected,
       refresh: refresh ?? this.refresh,
       currentTask: currentTask ?? this.currentTask,
       currentGTask: currentGTask ?? this.currentGTask,
@@ -44,5 +44,5 @@ class TaskLoaded extends TaskState {
   }
 
   @override
-  List<Object> get props => [gTasks, taskSelected, tasksDisplay, refresh];
+  List<Object> get props => [gTasks, gTaskSelected, tasksDisplay, refresh];
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:listify/repositories/user_repository.dart';
 import 'package:listify/routes/app_routes.dart';
+import 'package:listify/views/pages/drawer/app_drawer.dart';
 import 'package:listify/views/pages/home_page.dart';
 import 'package:listify/views/pages/login_page.dart';
 import 'package:listify/views/pages/profile_page.dart';
@@ -10,6 +11,7 @@ import 'package:listify/views/pages/update_profile_page.dart';
 import 'blocs/auth/auth_bloc.dart';
 
 import 'blocs/task/task_bloc.dart';
+import 'config/themes.dart';
 
 void main() {
   final UserRepository userRepository= UserRepository();
@@ -30,13 +32,12 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (context) => AuthBloc(userRepository)..add(AppStarted()))
       ],
       child: MaterialApp(
-        title: 'Listify',
+        // title: 'Listify',
         debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-        ),
+        theme:  AppTheme.darkTheme,
         onGenerateRoute: AppRoutes().getRoute,
         home: Scaffold(
+          drawer: const AppDrawer(),
           body: BlocBuilder<AuthBloc,AuthState>(
             builder: (context1, state) {
               if(state is AuthLoading){

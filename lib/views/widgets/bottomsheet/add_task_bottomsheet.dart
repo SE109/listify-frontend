@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:listify/blocs/task/task_bloc.dart';
 import 'package:listify/models/task.dart';
+import 'package:listify/utils/format_utils.dart';
 import 'package:provider/provider.dart';
 
 class AddTaskBottomSheet extends StatefulWidget {
@@ -111,7 +112,7 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: InputChip(
                     label: Text(
-                      'formatDate(currentDate)',
+                      FormatUtils.formatTaskDetailDateTime(currentDate!),
                       style: Theme.of(context).textTheme.labelLarge,
                       textAlign: TextAlign.center,
                     ),
@@ -168,7 +169,7 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
                               title: _titleController.text,
                               description: _detailsController.text,
                               fromDate: DateTime.now(),
-                              toDate: DateTime.now()));
+                              toDate: currentDate ?? DateTime.now()));
                         }
                       : null,
                   child: const Text('Save'),

@@ -84,12 +84,14 @@ class _TaskContentScreenState extends State<TaskContentScreen> {
                     detail: detailEditController.text,
                     title: titleEditController.text,
                     toDate: DateTime.now()));
+                Navigator.pop(context);
               }
             : () {
                 BlocProvider.of<TaskBloc>(context).add(TaskSaveChangeTaskEvent(
                     detail: detailEditController.text,
                     title: titleEditController.text,
                     toDate: DateTime.now()));
+                Navigator.pop(context);
               },
         label: widget.task.isCompleted
             ? const Text('Mark uncompleted')

@@ -68,3 +68,15 @@ class TaskChangeGTaskEvent extends TaskEvent {
 class TaskRefreshEvent extends TaskEvent {}
 
 class TaskDeleteEvent extends TaskEvent {}
+
+class TaskChangeGTaskListEvent extends TaskEvent {
+  final int gTaskId;
+
+  const TaskChangeGTaskListEvent({required this.gTaskId});
+}
+
+class TaskAddGTaskEvent extends TaskEvent {
+  final String name;
+
+  const TaskAddGTaskEvent({required this.name});
+}

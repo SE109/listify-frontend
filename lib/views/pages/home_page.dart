@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 
+import '../../blocs/task/task_bloc.dart';
 import '../widgets/bottomsheet/add_task_bottomsheet.dart';
 import '../widgets/bottomsheet/more_bottom_sheet.dart';
+import 'drawer/app_drawer.dart';
 import 'today_list.dart';
 
 class HomePage extends StatelessWidget {
@@ -11,6 +14,7 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // drawer: const AppDrawer(),
       backgroundColor: Theme.of(context).colorScheme.surface,
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => _showAddTaskBottomSheet(context, 'uid'),
@@ -24,10 +28,20 @@ class HomePage extends StatelessWidget {
             pinned: false,
             snap: false,
             elevation: 0,
-            title: Text('Listify'),
+            title: BlocBuilder<TaskBloc, TaskState>(
+              builder: (context, state) {
+                if(state is TaskLoaded){
+
+                return Text(state.gTaskSelected);
+                }
+                else {
+                  return Text('Listify');
+                }
+              },
+            ),
             centerTitle: true,
             leading: IconButton(
-              onPressed: () {},
+              onPressed: Scaffold.of(context).openDrawer,
               icon: const Icon(Icons.menu),
             ),
             actions: [
@@ -56,7 +70,7 @@ class HomePage extends StatelessWidget {
             ),
           ),
           // if (currentListId == 'today')
-            const TodayListBody()
+          const TodayListBody()
           // else if (currentListId == 'favorites')
           //   const FavoritesListBody()
           // else
