@@ -4,6 +4,8 @@ import 'package:listify/repositories/user_repository.dart';
 import 'package:listify/routes/app_routes.dart';
 import 'package:listify/views/pages/home_page.dart';
 import 'package:listify/views/pages/login_page.dart';
+import 'package:listify/views/pages/profile_page.dart';
+import 'package:listify/views/pages/update_profile_page.dart';
 
 import 'blocs/auth/auth_bloc.dart';
 
@@ -35,6 +37,7 @@ class MyApp extends StatelessWidget {
               }
               else if(state is AuthAuthenticated){
                 return HomePage(userRepository: userRepository,);
+                // return UpdateProfilePage();
               }
               else if(state is AuthUnAuthenticated){
                 return LoginPage(userRepository: userRepository,);

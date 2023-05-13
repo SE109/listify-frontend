@@ -36,7 +36,7 @@ class _LoginPageState extends State<LoginPage> {
           backgroundColor: AppConstants.bg,
           body: BlocListener<LoginBloc, LoginState>(
             listener: (context, state) {
-              if(state is LoginFailure){
+              if (state is LoginFailure) {
                 CustomToast().show(message: state.error, color: Colors.red);
               }
             },
@@ -68,8 +68,8 @@ class _LoginPageState extends State<LoginPage> {
                                     child: Column(
                                       children: [
                                         CustomTextFormField(
-                                          hint: "Example@gmail.com",
-                                          title: "Email",
+                                          prefixIcon: Icon(Icons.email),
+                                          label: "Email",
                                           obscureText: false,
                                           textEditingController:
                                               _emailController,
@@ -89,8 +89,8 @@ class _LoginPageState extends State<LoginPage> {
                                           height: 20,
                                         ),
                                         CustomTextFormField(
-                                          hint: "Your Password",
-                                          title: "Password",
+                                          prefixIcon: Icon(Icons.lock),
+                                          label: "Password",
                                           obscureText: true,
                                           textEditingController:
                                               _passController,
@@ -101,7 +101,7 @@ class _LoginPageState extends State<LoginPage> {
                                             }
                                           },
                                           textInputType: TextInputType.text,
-                                        )
+                                        ),
                                       ],
                                     ),
                                   )),
@@ -178,7 +178,8 @@ class _LoginPageState extends State<LoginPage> {
                                 InkWell(
                                   onTap: () {
                                     Navigator.pushNamed(
-                                        context, AppRoutes.register, arguments: widget.userRepository);
+                                        context, AppRoutes.register,
+                                        arguments: widget.userRepository);
                                   },
                                   child: Text(
                                     "Sign up",

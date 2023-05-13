@@ -65,6 +65,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                 height: 170,
                                 width: 170,
                               ),
+                              SizedBox(height: 20,),
                               Form(
                                   key: _formKey,
                                   child: Padding(
@@ -81,8 +82,8 @@ class _RegisterPageState extends State<RegisterPage> {
                                             SizedBox(
                                               width: 170,
                                               child: CustomTextFormField(
-                                                hint: "First Name",
-                                                title: "First Name",
+                                                prefixIcon: Icon(Icons.person),
+                                                label: "First Name",
                                                 obscureText: false,
                                                 textEditingController:
                                                     _firstNameController,
@@ -100,8 +101,8 @@ class _RegisterPageState extends State<RegisterPage> {
                                             SizedBox(
                                               width: 170,
                                               child: CustomTextFormField(
-                                                hint: "Last Name",
-                                                title: "Last Name",
+                                                prefixIcon: Icon(Icons.person),
+                                                label: "Last Name",
                                                 obscureText: false,
                                                 textEditingController:
                                                     _lastNameController,
@@ -122,8 +123,8 @@ class _RegisterPageState extends State<RegisterPage> {
                                           height: 15,
                                         ),
                                         CustomTextFormField(
-                                          hint: "Phone",
-                                          title: "Phone",
+                                          prefixIcon: Icon(Icons.phone),
+                                          label: "Phone",
                                           obscureText: false,
                                           textEditingController:
                                               _phoneController,
@@ -140,8 +141,8 @@ class _RegisterPageState extends State<RegisterPage> {
                                           height: 15,
                                         ),
                                         CustomTextFormField(
-                                          hint: "Email",
-                                          title: "Email",
+                                          label: "Email",
+                                          prefixIcon: Icon(Icons.email),
                                           obscureText: false,
                                           textEditingController:
                                               _emailController,
@@ -161,8 +162,8 @@ class _RegisterPageState extends State<RegisterPage> {
                                           height: 15,
                                         ),
                                         CustomTextFormField(
-                                          hint: "Password",
-                                          title: "Password",
+                                          label: "Password",
+                                          prefixIcon: Icon(Icons.lock),
                                           obscureText: true,
                                           textEditingController:
                                               _passController,
@@ -180,6 +181,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                       ],
                                     ),
                                   )),
+                              SizedBox(height: 20,),
                               InkWell(
                                 onTap: () async {
                                   if (_formKey.currentState!.validate()) {
