@@ -77,12 +77,16 @@ class _TaskContentScreenState extends State<TaskContentScreen> {
       floatingActionButton: FloatingActionButton.extended(
         onPressed: widget.task.isCompleted
             ? () {
-                BlocProvider.of<TaskBloc>(context)
-                    .add(TaskSaveChangeTaskEvent());
+                BlocProvider.of<TaskBloc>(context).add(TaskSaveChangeTaskEvent(
+                    detail: detailEditController.text,
+                    title: titleEditController.text,
+                    toDate: DateTime.now()));
               }
             : () {
-                BlocProvider.of<TaskBloc>(context)
-                    .add(TaskSaveChangeTaskEvent());
+                BlocProvider.of<TaskBloc>(context).add(TaskSaveChangeTaskEvent(
+                    detail: detailEditController.text,
+                    title: titleEditController.text,
+                    toDate: DateTime.now()));
               },
         label: widget.task.isCompleted
             ? const Text('Mark uncompleted')

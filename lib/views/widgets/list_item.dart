@@ -49,22 +49,26 @@ class TwoLineListTile extends StatelessWidget {
     // final tasksController = context.watch<TasksController>();
 
     return GestureDetector(
-      onTap: () => Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => ChangeNotifierProvider(
-            create: (_) {
-              BlocProvider.of<TaskBloc>(context)
-                  .add(TaskChangeCurrentEvent(task: task));
-            },
-            child:
-                // Container()
-                TaskContentScreen(
-              task: task, 
+      onTap: () {
+        BlocProvider.of<TaskBloc>(context)
+            .add(TaskChangeCurrentEvent(task: task));
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ChangeNotifierProvider(
+              create: (_) {
+                // BlocProvider.of<TaskBloc>(context)
+                //     .add(TaskChangeCurrentEvent(task: task));
+              },
+              child:
+                  // Container()
+                  TaskContentScreen(
+                task: task,
+              ),
             ),
           ),
-        ),
-      ),
+        );
+      },
       child: ListTile(
         leading: IconButton(
           icon: task.isCompleted
@@ -119,22 +123,26 @@ class OneLineListTile extends StatelessWidget {
     // final tasksController = context.watch<TasksController>();
 
     return GestureDetector(
-      onTap: () => Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => ChangeNotifierProvider(
-            create: (_) {
-              BlocProvider.of<TaskBloc>(context)
-                  .add(TaskChangeCurrentEvent(task: task));
-            },
-            child:
-                // Container()
-                TaskContentScreen(
-              task: task,
+      onTap: () {
+        BlocProvider.of<TaskBloc>(context)
+            .add(TaskChangeCurrentEvent(task: task));
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ChangeNotifierProvider(
+              create: (_) {
+                // BlocProvider.of<TaskBloc>(context)
+                //     .add(TaskChangeCurrentEvent(task: task));
+              },
+              child:
+                  // Container()
+                  TaskContentScreen(
+                task: task,
+              ),
             ),
           ),
-        ),
-      ),
+        );
+      },
       child: ListTile(
         leading: IconButton(
           icon: task.isCompleted

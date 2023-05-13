@@ -47,4 +47,22 @@ class TaskChangeCurrentEvent extends TaskEvent {
   List<Object> get props => [task];
 }
 
-class TaskSaveChangeTaskEvent extends TaskEvent {}
+class TaskSaveChangeTaskEvent extends TaskEvent {
+  final String title;
+  final String detail;
+  final DateTime toDate;
+
+  const TaskSaveChangeTaskEvent(
+      {required this.title, required this.detail, required this.toDate});
+}
+
+class TaskChangeGTaskEvent extends TaskEvent {
+  final String gTaskName;
+
+  const TaskChangeGTaskEvent({required this.gTaskName});
+
+  @override
+  List<Object> get props => [gTaskName];
+}
+
+class TaskRefreshEvent extends TaskEvent {}

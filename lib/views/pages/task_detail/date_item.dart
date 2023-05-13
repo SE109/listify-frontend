@@ -1,16 +1,25 @@
-
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:listify/utils/format_utils.dart';
 import 'package:provider/provider.dart';
 
+import '../../../blocs/task/task_bloc.dart';
 import '../../../models/task.dart';
 
-class DateItem extends StatelessWidget {
+class DateItem extends StatefulWidget {
   const DateItem({
-    Key? key, required this.task,
+    Key? key,
+    required this.task,
   }) : super(key: key);
 
   final Task task;
 
+  @override
+  State<DateItem> createState() => _DateItemState();
+}
+
+class _DateItemState extends State<DateItem> {
+  DateTime? date;
   Future<DateTime?> _showDatePicker(BuildContext context) {
     return showDatePicker(
       context: context,
@@ -19,6 +28,12 @@ class DateItem extends StatelessWidget {
       firstDate: DateTime(1970),
       lastDate: DateTime(3000),
     );
+  }
+
+  @override
+  void initState() {
+    date = widget.task.toDate;
+    super.initState();
   }
 
   @override
@@ -32,25 +47,40 @@ class DateItem extends StatelessWidget {
         children: [
           const Icon(Icons.today_rounded),
           const SizedBox(width: 16),
-          task.toDate != null
+          date != null
               ? InputChip(
                   label: Text(
-                    task.fromDate.toLocal().toString(),
+                    FormatUtils.formatTaskDetailDateTime(date!),
                     style: Theme.of(context).textTheme.labelLarge,
                     textAlign: TextAlign.center,
                   ),
-                  onDeleted: () {},
+                  onDeleted: () {
+                    setState(() {
+                      date = null;
+                    });
+                  },
                 )
-              : Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 12),
-                  child: GestureDetector(
-                    onTap: () async {
-                    },
-                    child: Text(
-                      'Add date',
-                      style: Theme.of(context).textTheme.bodyLarge,
-                    ),
-                  ),
+              : BlocBuilder<TaskBloc, TaskState>(
+                  builder: (context, state) {
+                    if (state is TaskLoaded) {
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        child: GestureDetector(
+                          onTap: () async {
+                            date = await _showDatePicker(context);
+                            setState(() {});
+                            state.currentTask = state.currentTask!.copyWith(toDate: date);
+                          },
+                          child: Text(
+                            'Add date',
+                            style: Theme.of(context).textTheme.bodyLarge,
+                          ),
+                        ),
+                      );
+                    } else {
+                      return const SizedBox();
+                    }
+                  },
                 ),
         ],
       ),

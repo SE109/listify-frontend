@@ -68,13 +68,21 @@ class _ListSelectorState extends State<ListSelector> {
                   ),
                 );
               },
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(gTask.name),
-                  const Icon(Icons.arrow_drop_down_rounded),
-                ],
+              child: BlocBuilder<TaskBloc, TaskState>(
+                builder: (context, state) {
+                  if (state is TaskLoaded) {
+                    return Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(state.currentGTask!),
+                        const Icon(Icons.arrow_drop_down_rounded),
+                      ],
+                    );
+                  } else {
+                    return const SizedBox();
+                  }
+                },
               ),
             ),
           );
@@ -115,27 +123,35 @@ class ListSelectionBottomSheet extends StatelessWidget {
             style: Theme.of(context).textTheme.labelLarge,
           ),
           const SizedBox(height: 16),
-          ListView.builder(
-            shrinkWrap: true,
-            itemCount: list.length,
-            itemBuilder: (_, index) {
-              // bool isCurrentListId =
-              //     selection[index].id == taskContentController.listId;
-              return TextButton(
-                onPressed: gTask.name == list[index] ? null : () {},
-                // : () => taskContentController
-                //     .updateTask(listId: selection[index].id)
-                //     .then((_) => Navigator.pop(context)),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(list[index]),
-                    gTask.name == list[index]
-                        ? const Icon(Icons.check_rounded)
-                        : Container()
-                  ],
-                ),
-              );
+          BlocBuilder<TaskBloc, TaskState>(
+            builder: (context, state) {
+              if (state is TaskLoaded) {
+                return ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: list.length,
+                  itemBuilder: (_, index) {
+                    // bool isCurrentListId =
+                    //     selection[index].id == taskContentController.listId;
+                    return TextButton(
+                      onPressed: state.currentGTask == list[index]
+                          ? null
+                          : () => BlocProvider.of<TaskBloc>(context).add(
+                              TaskChangeGTaskEvent(gTaskName: list[index])),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(list[index]),
+                          state.currentGTask == list[index]
+                              ? const Icon(Icons.check_rounded)
+                              : Container()
+                        ],
+                      ),
+                    );
+                  },
+                );
+              } else {
+                return const SizedBox();
+              }
             },
           ),
         ],
