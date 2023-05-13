@@ -23,8 +23,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       emit(AuthAuthenticated());
     });
     on<LoggedOut>((event, emit) async {
-      emit(AuthLoading());
-      await userRepository.deleteToken();                           
+      emit(AuthLoading()); 
+      await userRepository.logout();
+      await userRepository.deleteToken();  
       emit(AuthUnAuthenticated());
     });
   }
