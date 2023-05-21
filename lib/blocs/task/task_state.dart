@@ -12,6 +12,7 @@ class TaskLoading extends TaskState {}
 class TaskLoaded extends TaskState {
   final List<GTask> gTasks;
   final List<Task> tasksDisplay;
+  final List<Task> taskFavorite;
   final String gTaskSelected;
   final int refresh;
   Task? currentTask;
@@ -22,6 +23,7 @@ class TaskLoaded extends TaskState {
       this.gTaskSelected = 'Today',
       required this.tasksDisplay,
       required this.refresh,
+      required this.taskFavorite,
       this.currentTask,
       this.currentGTask});
 
@@ -32,12 +34,14 @@ class TaskLoaded extends TaskState {
     final Task? currentTask,
     final int? refresh,
     final String? currentGTask,
+    final List<Task>? taskFavorite
   }) {
     return TaskLoaded(
       gTasks: gTasks ?? this.gTasks,
       tasksDisplay: tasksDisplay ?? this.tasksDisplay,
       gTaskSelected: gTaskSelected ?? this.gTaskSelected,
       refresh: refresh ?? this.refresh,
+      taskFavorite: taskFavorite ?? this.taskFavorite,
       currentTask: currentTask ?? this.currentTask,
       currentGTask: currentGTask ?? this.currentGTask,
     );

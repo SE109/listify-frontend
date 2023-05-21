@@ -80,3 +80,13 @@ class TaskAddGTaskEvent extends TaskEvent {
 
   const TaskAddGTaskEvent({required this.name});
 }
+
+class TaskCompleteSubtaskEvent extends TaskEvent {
+  final String id;
+
+  const TaskCompleteSubtaskEvent({required this.id});
+}
+
+class TaskLoadAllFavoriteEvent extends TaskEvent {
+  
+}

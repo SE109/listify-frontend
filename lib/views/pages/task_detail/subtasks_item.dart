@@ -107,7 +107,7 @@ class _SubTaskItemState extends State<SubTaskItem> {
                               .firstWhere((element) => element.id == id)
                               .copyWith(isCompleted: false);
                       BlocProvider.of<TaskBloc>(context)
-                          .add(TaskRefreshEvent());
+                          .add(TaskCompleteSubtaskEvent(id: widget.item.id.toString()));
                       // setState(() {
                       //   subTask = widget.item.copyWith(isCompleted: false);
                       // });
@@ -121,7 +121,7 @@ class _SubTaskItemState extends State<SubTaskItem> {
                               .firstWhere((element) => element.id == id)
                               .copyWith(isCompleted: true);
                       BlocProvider.of<TaskBloc>(context)
-                          .add(TaskRefreshEvent());
+                          .add(TaskCompleteSubtaskEvent(id: widget.item.id.toString()));
                       // setState(() {
                       //   subTask = widget.item.copyWith(isCompleted: true);
                       // });
@@ -133,7 +133,7 @@ class _SubTaskItemState extends State<SubTaskItem> {
                   : const Icon(Icons.check_box_outline_blank_rounded),
             ),
             title: TextFormField(
-              initialValue: '',
+              initialValue: widget.item.title,
               minLines: null,
               style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                     decoration: state.currentTask!.subTaskList

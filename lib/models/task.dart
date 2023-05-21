@@ -61,9 +61,13 @@ class Task {
         toDate: DateTime.parse(json["toDate"]),
         isCompleted: json["isCompleted"],
         isFavorited: json["isFavorited"],
-        subTaskList: List<SubTask>.from(
-            json["subTaskList"].map((x) => SubTask.fromJson(x))),
-        voiceList: List<dynamic>.from(json["voiceList"].map((x) => x)),
+        subTaskList: json["subTaskList"] != null
+            ? List<SubTask>.from(
+                json["subTaskList"].map((x) => SubTask.fromJson(x)))
+            : [],
+        voiceList: json["voiceList"] != null
+            ? List<dynamic>.from(json["voiceList"].map((x) => x))
+            : [],
       );
 
   Map<String, dynamic> toJson() => {

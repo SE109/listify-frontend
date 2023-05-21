@@ -26,6 +26,8 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
     on<TaskDeleteEvent>(_onDeleteTask);
     on<TaskChangeGTaskListEvent>(_onChangeGTaskList);
     on<TaskAddGTaskEvent>(_onAddGTask);
+    on<TaskCompleteSubtaskEvent>(_onCompleteSubTask);
+    on<TaskLoadAllFavoriteEvent>(_onLoadAllFavorite);
   }
 
   FutureOr<void> _loadAllTask(
@@ -36,7 +38,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
     final response = await dio.get('http://192.168.1.231:5000/gtask',
         options: Options(headers: {
           "Authorization":
-              "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Im1haWwiOiIyMDUyMTM2NkBnbS51aXQuZWR1LnZuIn0sImlhdCI6MTY4Mzk4NzcyNCwiZXhwIjoxNjg0MDc0MTI0fQ.8IuUNj0Iqy5IvlbbD4fZ_EbgZsQxucD9W6nKU3F0CQ8"
+              "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Im1haWwiOiIyMDUyMTM2NkBnbS51aXQuZWR1LnZuIn0sImlhdCI6MTY4NDY3Njk1NiwiZXhwIjoxNjg0NzYzMzU2fQ.UmTeMyAa68cGc8WPbuwUfhXI8pH_aVwDZ15Rzrz8IRI"
         }));
 
     // print(response.data['data']);
@@ -66,7 +68,8 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
           gTasks: gTasks,
           tasksDisplay: todayTasks,
           refresh: 0,
-          currentGTask: 'Today'));
+          currentGTask: 'Today',
+          taskFavorite: []));
     }
   }
 
@@ -88,7 +91,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
       final response = await dio.post(url,
           options: Options(headers: {
             "Authorization":
-                "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Im1haWwiOiIyMDUyMTM2NkBnbS51aXQuZWR1LnZuIn0sImlhdCI6MTY4Mzk4NzcyNCwiZXhwIjoxNjg0MDc0MTI0fQ.8IuUNj0Iqy5IvlbbD4fZ_EbgZsQxucD9W6nKU3F0CQ8"
+                "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Im1haWwiOiIyMDUyMTM2NkBnbS51aXQuZWR1LnZuIn0sImlhdCI6MTY4NDY3Njk1NiwiZXhwIjoxNjg0NzYzMzU2fQ.UmTeMyAa68cGc8WPbuwUfhXI8pH_aVwDZ15Rzrz8IRI"
           }),
           data: data);
 
@@ -98,7 +101,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
           'http://192.168.1.231:5000/task/${response.data['data']['id']}/move',
           options: Options(headers: {
             "Authorization":
-                "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Im1haWwiOiIyMDUyMTM2NkBnbS51aXQuZWR1LnZuIn0sImlhdCI6MTY4Mzk4NzcyNCwiZXhwIjoxNjg0MDc0MTI0fQ.8IuUNj0Iqy5IvlbbD4fZ_EbgZsQxucD9W6nKU3F0CQ8"
+                "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Im1haWwiOiIyMDUyMTM2NkBnbS51aXQuZWR1LnZuIn0sImlhdCI6MTY4NDY3Njk1NiwiZXhwIjoxNjg0NzYzMzU2fQ.UmTeMyAa68cGc8WPbuwUfhXI8pH_aVwDZ15Rzrz8IRI"
           }),
           data: {
             "groupTaskId": currentState.gTasks
@@ -118,7 +121,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
     await dio.put('http://192.168.1.231:5000/task/${event.task.id}/toggle-mark',
         options: Options(headers: {
           "Authorization":
-              "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Im1haWwiOiIyMDUyMTM2NkBnbS51aXQuZWR1LnZuIn0sImlhdCI6MTY4Mzk4NzcyNCwiZXhwIjoxNjg0MDc0MTI0fQ.8IuUNj0Iqy5IvlbbD4fZ_EbgZsQxucD9W6nKU3F0CQ8"
+              "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Im1haWwiOiIyMDUyMTM2NkBnbS51aXQuZWR1LnZuIn0sImlhdCI6MTY4NDY3Njk1NiwiZXhwIjoxNjg0NzYzMzU2fQ.UmTeMyAa68cGc8WPbuwUfhXI8pH_aVwDZ15Rzrz8IRI"
         }));
     add(TaskLoadEvent());
   }
@@ -129,7 +132,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
     await dio.put('http://192.168.1.231:5000/task/${event.task.id}/toggle-favo',
         options: Options(headers: {
           "Authorization":
-              "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Im1haWwiOiIyMDUyMTM2NkBnbS51aXQuZWR1LnZuIn0sImlhdCI6MTY4Mzk4NzcyNCwiZXhwIjoxNjg0MDc0MTI0fQ.8IuUNj0Iqy5IvlbbD4fZ_EbgZsQxucD9W6nKU3F0CQ8"
+              "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Im1haWwiOiIyMDUyMTM2NkBnbS51aXQuZWR1LnZuIn0sImlhdCI6MTY4NDY3Njk1NiwiZXhwIjoxNjg0NzYzMzU2fQ.UmTeMyAa68cGc8WPbuwUfhXI8pH_aVwDZ15Rzrz8IRI"
         }));
     add(TaskLoadEvent());
   }
@@ -174,7 +177,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
             options: Options(
               headers: {
                 "Authorization":
-                    "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Im1haWwiOiIyMDUyMTM2NkBnbS51aXQuZWR1LnZuIn0sImlhdCI6MTY4Mzk4NzcyNCwiZXhwIjoxNjg0MDc0MTI0fQ.8IuUNj0Iqy5IvlbbD4fZ_EbgZsQxucD9W6nKU3F0CQ8"
+                    "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Im1haWwiOiIyMDUyMTM2NkBnbS51aXQuZWR1LnZuIn0sImlhdCI6MTY4NDY3Njk1NiwiZXhwIjoxNjg0NzYzMzU2fQ.UmTeMyAa68cGc8WPbuwUfhXI8pH_aVwDZ15Rzrz8IRI"
               },
             ),
             data: {
@@ -185,12 +188,35 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
             });
       }
 
+      //http://localhost:5000/task/subtask/1
+
+      await dio.delete(
+        'http://192.168.1.231:5000/task/subtask/${currentState.currentTask!.id}',
+        options: Options(
+          headers: {
+            "Authorization":
+                "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Im1haWwiOiIyMDUyMTM2NkBnbS51aXQuZWR1LnZuIn0sImlhdCI6MTY4NDY3Njk1NiwiZXhwIjoxNjg0NzYzMzU2fQ.UmTeMyAa68cGc8WPbuwUfhXI8pH_aVwDZ15Rzrz8IRI"
+          },
+        ),
+      );
+
+      for (var e in currentState.currentTask!.subTaskList) {
+        await dio.post('http://192.168.1.231:5000/subtask',
+            options: Options(
+              headers: {
+                "Authorization":
+                    "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Im1haWwiOiIyMDUyMTM2NkBnbS51aXQuZWR1LnZuIn0sImlhdCI6MTY4NDY3Njk1NiwiZXhwIjoxNjg0NzYzMzU2fQ.UmTeMyAa68cGc8WPbuwUfhXI8pH_aVwDZ15Rzrz8IRI"
+              },
+            ),
+            data: {"taskId": currentState.currentTask!.id, "title": e.title});
+      }
+
       await dio
           .put('http://192.168.1.231:5000/task/${currentState.currentTask!.id}',
               options: Options(
                 headers: {
                   "Authorization":
-                      "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Im1haWwiOiIyMDUyMTM2NkBnbS51aXQuZWR1LnZuIn0sImlhdCI6MTY4Mzk4NzcyNCwiZXhwIjoxNjg0MDc0MTI0fQ.8IuUNj0Iqy5IvlbbD4fZ_EbgZsQxucD9W6nKU3F0CQ8"
+                      "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Im1haWwiOiIyMDUyMTM2NkBnbS51aXQuZWR1LnZuIn0sImlhdCI6MTY4NDY3Njk1NiwiZXhwIjoxNjg0NzYzMzU2fQ.UmTeMyAa68cGc8WPbuwUfhXI8pH_aVwDZ15Rzrz8IRI"
                 },
               ),
               data: {
@@ -238,7 +264,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
         options: Options(
           headers: {
             "Authorization":
-                "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Im1haWwiOiIyMDUyMTM2NkBnbS51aXQuZWR1LnZuIn0sImlhdCI6MTY4Mzk4NzcyNCwiZXhwIjoxNjg0MDc0MTI0fQ.8IuUNj0Iqy5IvlbbD4fZ_EbgZsQxucD9W6nKU3F0CQ8"
+                "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Im1haWwiOiIyMDUyMTM2NkBnbS51aXQuZWR1LnZuIn0sImlhdCI6MTY4NDY3Njk1NiwiZXhwIjoxNjg0NzYzMzU2fQ.UmTeMyAa68cGc8WPbuwUfhXI8pH_aVwDZ15Rzrz8IRI"
           },
         ),
       );
@@ -256,6 +282,9 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
       final currentState = state as TaskLoaded;
 
       if (event.gTaskId == -1) {
+        add(TaskLoadAllFavoriteEvent());
+        emit(currentState.copyWith( gTaskSelected: 'Favorite'));
+        
       } else {
         final resultList = currentState.gTasks
             .firstWhere((element) => element.id == event.gTaskId)
@@ -279,11 +308,44 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
         options: Options(
           headers: {
             "Authorization":
-                "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Im1haWwiOiIyMDUyMTM2NkBnbS51aXQuZWR1LnZuIn0sImlhdCI6MTY4Mzk4NzcyNCwiZXhwIjoxNjg0MDc0MTI0fQ.8IuUNj0Iqy5IvlbbD4fZ_EbgZsQxucD9W6nKU3F0CQ8"
+                "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Im1haWwiOiIyMDUyMTM2NkBnbS51aXQuZWR1LnZuIn0sImlhdCI6MTY4NDY3Njk1NiwiZXhwIjoxNjg0NzYzMzU2fQ.UmTeMyAa68cGc8WPbuwUfhXI8pH_aVwDZ15Rzrz8IRI"
           },
         ),
         data: {"name": event.name});
 
     add(TaskLoadEvent());
+  }
+
+  FutureOr<void> _onCompleteSubTask(
+      TaskCompleteSubtaskEvent event, Emitter<TaskState> emit) async {
+    final Dio dio = Dio();
+    await dio.put(
+      'http://192.168.1.231:5000/subtask/${event.id}/toggle-mark',
+      options: Options(
+        headers: {
+          "Authorization":
+              "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Im1haWwiOiIyMDUyMTM2NkBnbS51aXQuZWR1LnZuIn0sImlhdCI6MTY4NDY3Njk1NiwiZXhwIjoxNjg0NzYzMzU2fQ.UmTeMyAa68cGc8WPbuwUfhXI8pH_aVwDZ15Rzrz8IRI"
+        },
+      ),
+    );
+    add(TaskLoadEvent());
+  }
+
+  FutureOr<void> _onLoadAllFavorite(
+      TaskLoadAllFavoriteEvent event, Emitter<TaskState> emit) async {
+    if (state is TaskLoaded) {
+      final currentState = state as TaskLoaded;
+
+      Dio dio = Dio();
+
+      final response = await dio.get('http://192.168.1.231:5000/task/fav',
+          options: Options(headers: {
+            "Authorization":
+                "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Im1haWwiOiIyMDUyMTM2NkBnbS51aXQuZWR1LnZuIn0sImlhdCI6MTY4NDY3Njk1NiwiZXhwIjoxNjg0NzYzMzU2fQ.UmTeMyAa68cGc8WPbuwUfhXI8pH_aVwDZ15Rzrz8IRI"
+          }));
+      emit(currentState.copyWith(
+          tasksDisplay:
+              (response.data['data'] as List).map((e) => Task.fromJson(e)).toList()));
+    }
   }
 }
