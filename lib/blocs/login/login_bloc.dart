@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
+import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:listify/blocs/auth/auth_bloc.dart';
 import 'package:listify/repositories/user_repository.dart';
@@ -16,19 +17,14 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       emit(LoginLoading());
       try{
         final response = await userRepository.login(event.email, event.password);
-        final json = jsonDecode(response.body);
-        if(response.statusCode==200){
-          final token = json['data']['accessToken'].toString();
-          print(response.body.toString());
-          authBloc.add(LoggedIn(token: token));
-        }  
-        else{
-          print(json['message']);
-          emit(LoginFailure(json['message']));
-        }  
+        final accessToken = response.data['data']['accessToken'].toString();
+        final refreshToken = response.data['data']['refreshToken'].toString();
+        // print(token);
+        UserRepository.setupInterceptors(accessToken);
+        authBloc.add(LoggedIn(accessToken: accessToken, refreshToken: refreshToken));
         emit(LoginInitial());
-      }catch(e){
-        emit(LoginFailure(e.toString()));
+      }on DioError catch(e){
+        emit(LoginFailure(e.response!.data['message']));
       }  
     });
     on<ButtonLogoutPressed>((event, emit) async {

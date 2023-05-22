@@ -1,10 +1,12 @@
-class User {
+import 'package:equatable/equatable.dart';
+
+class User extends Equatable{
     final String mail;
     final String firstName;
     final String lastName;
     final String avatar;
     final String phoneNum;
-    final DateTime dateOfBirth;
+    final DateTime? dateOfBirth;
 
     User({
         required this.mail,
@@ -38,7 +40,7 @@ class User {
         lastName: json["lastName"],
         avatar: json["avatar"],
         phoneNum: json["phoneNum"],
-        dateOfBirth: DateTime.parse(json["dateOfBirth"]),
+        dateOfBirth: json["dateOfBirth"]!=null ? DateTime.parse(json["dateOfBirth"]):DateTime.now(),
     );
 
     Map<String, dynamic> toJson() => {
@@ -47,6 +49,10 @@ class User {
         "lastName": lastName,
         "avatar": avatar,
         "phoneNum": phoneNum,
-        "dateOfBirth": dateOfBirth.toIso8601String(),
+        "dateOfBirth": dateOfBirth!.toIso8601String(),
     };
+    
+      @override
+      // TODO: implement props
+      List<Object?> get props => [mail, firstName, lastName, avatar, phoneNum, dateOfBirth];
 }

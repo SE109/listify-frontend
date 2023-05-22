@@ -3,10 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:listify/constants/app_constants.dart';
 import 'package:listify/repositories/user_repository.dart';
 
-import '../../blocs/register/register_bloc.dart';
-import '../../common/custom_toast.dart';
-import '../../routes/app_routes.dart';
-import '../widgets/custom_textfield.dart';
+import '../../../blocs/register/register_bloc.dart';
+import '../../../common/custom_toast.dart';
+import '../../widgets/custom_textfield.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key, required this.userRepository});
@@ -30,6 +29,7 @@ class _RegisterPageState extends State<RegisterPage> {
     _emailController.clear();
     _passController.clear();
     _phoneController.clear();
+    FocusScope.of(context).unfocus();
   }
 
   @override

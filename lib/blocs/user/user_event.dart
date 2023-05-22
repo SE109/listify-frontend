@@ -15,15 +15,31 @@ class GetInfo extends UserEvent {
 }
 
 class UpdateInfo extends UserEvent {
-  const UpdateInfo({required this.firstName, required this.lastName, required this.phoneNum, required this.dateOfBirth, required this.imgAva});
+  const UpdateInfo({required this.firstName, required this.lastName, required this.phoneNum, required this.dateOfBirth, required this.file, required this.id, required this.context});
   final String firstName; 
   final String lastName; 
   final String phoneNum;
   final DateTime dateOfBirth;
-  final String imgAva;
+  final File? file;
+  final String id;
+  final BuildContext context;
   @override
-  List<Object> get props => [];
+  List<Object> get props => [firstName, lastName, phoneNum, dateOfBirth, file!, context];
 }
+
+class UpdateInfoWithoutAvatar extends UserEvent {
+  const UpdateInfoWithoutAvatar({required this.firstName, required this.lastName, required this.phoneNum, required this.dateOfBirth, required this.linkAvatar, required this.id, required this.context});
+  final String firstName; 
+  final String lastName; 
+  final String phoneNum;
+  final DateTime dateOfBirth;
+  final String linkAvatar;
+  final String id;
+  final BuildContext context;
+  @override
+  List<Object> get props => [firstName, lastName, phoneNum, dateOfBirth, linkAvatar, context];
+}
+
 
 class ChangePassword extends UserEvent {
   const ChangePassword({required this.oldPassword, required this.newPassword});
