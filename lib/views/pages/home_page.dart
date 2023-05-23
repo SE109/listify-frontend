@@ -14,7 +14,7 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // drawer: const AppDrawer(),
+      drawer: const AppDrawer(),
       backgroundColor: Theme.of(context).colorScheme.surface,
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => _showAddTaskBottomSheet(context, 'uid'),

@@ -10,7 +10,6 @@ import 'package:listify/views/pages/home_page.dart';
 import 'package:listify/views/pages/login_register/login_page.dart';
 import 'package:listify/views/pages/user_profile/profile_page.dart';
 
-
 import 'blocs/auth/auth_bloc.dart';
 
 import 'blocs/login/login_bloc.dart';
@@ -19,10 +18,12 @@ import 'config/themes.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  final UserRepository userRepository= UserRepository();
+  final UserRepository userRepository = UserRepository();
   Bloc.observer = SimpleBlocObserver();
   await Firebase.initializeApp();
-  runApp(MyApp(userRepository: userRepository,));
+  runApp(MyApp(
+    userRepository: userRepository,
+  ));
 }
 
 class MyApp extends StatelessWidget {
@@ -35,38 +36,44 @@ class MyApp extends StatelessWidget {
         BlocProvider(
           create: (context) => TaskBloc()..add(TaskLoadEvent()),
         ),
-        BlocProvider(create: (context) => AuthBloc(userRepository)..add(AppStarted())),
+        BlocProvider(
+            create: (context) => AuthBloc(userRepository)..add(AppStarted())),
         BlocProvider(create: (context) => UserBloc()..add(GetInfo())),
-        BlocProvider(create: (context) => LoginBloc(authBloc: BlocProvider.of<AuthBloc>(context), userRepository: userRepository)),
+        BlocProvider(
+            create: (context) => LoginBloc(
+                authBloc: BlocProvider.of<AuthBloc>(context),
+                userRepository: userRepository)),
       ],
       child: MaterialApp(
         // title: 'Listify',
+
         debugShowCheckedModeBanner: false,
-        theme:  AppTheme.darkTheme,
+        theme: AppTheme.darkTheme,
         onGenerateRoute: AppRoutes().getRoute,
         home: Scaffold(
-            body: BlocBuilder<AuthBloc,AuthState>(
-              builder: (context1, state) {
-                if(state is AuthLoading){
-                  return Center(child: const CircularProgressIndicator());
-                }
-                else if(state is AuthAuthenticated){
-                  // return HomePage();
-                  // return UpdateProfilePage();
-                  return ProfilePage();
-                  // return Container(child: Center(child: ElevatedButton(child: Text("test"),onPressed: () {
-                  //   userRepository.refreshToken  ();
-                  // },)),);
-                }
-                else if(state is AuthUnAuthenticated){
-                  return LoginPage(userRepository: userRepository,);
-                }
-                else{
-                  return Center(child: const CircularProgressIndicator());
-                }
-            },),
+          drawer: const AppDrawer(),
+          body: BlocBuilder<AuthBloc, AuthState>(
+            builder: (context1, state) {
+              if (state is AuthLoading) {
+                return Center(child: const CircularProgressIndicator());
+              } else if (state is AuthAuthenticated) {
+                // return HomePage();
+                // return UpdateProfilePage();
+                return HomePage();
+                // return Container(child: Center(child: ElevatedButton(child: Text("test"),onPressed: () {
+                //   userRepository.refreshToken  ();
+                // },)),);
+              } else if (state is AuthUnAuthenticated) {
+                return LoginPage(
+                  userRepository: userRepository,
+                );
+              } else {
+                return Center(child: const CircularProgressIndicator());
+              }
+            },
           ),
         ),
+      ),
     );
   }
 }

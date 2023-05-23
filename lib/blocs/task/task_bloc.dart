@@ -3,8 +3,10 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:intl/intl.dart';
 import 'package:listify/models/g_task.dart';
+import 'package:listify/repositories/user_repository.dart';
 import 'package:logger/logger.dart';
 
 import '../../models/task.dart';
@@ -32,17 +34,19 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
   FutureOr<void> _loadAllTask(
       TaskLoadEvent event, Emitter<TaskState> emit) async {
     // print()
-    Dio dio = Dio();
+    Dio dio = UserRepository.dio;
 
-    final response = await dio.get('http://192.168.1.231:5000/gtask',
-        options: Options(headers: {
-          "Authorization":
-              "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Im1haWwiOiIyMDUyMTM2NkBnbS51aXQuZWR1LnZuIn0sImlhdCI6MTY4NDY3Njk1NiwiZXhwIjoxNjg0NzYzMzU2fQ.UmTeMyAa68cGc8WPbuwUfhXI8pH_aVwDZ15Rzrz8IRI"
-        }));
+    final token = await FlutterSecureStorage().read(key: 'accessToken');
+
+    final response = await dio.get(
+      '/gtask',
+    );
 
     // print(response.data['data']);
     List<GTask> gTasks =
         (response.data['data'] as List).map((e) => GTask.fromJson(e)).toList();
+
+    print('ngyu');
     // print(gTasks[0].taskList[0].description);
 
     final List<Task> todayTasks = gTasks
@@ -55,17 +59,17 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
     //   (e) => print(e.title),
     // );
 
-    // print(todayTasks);
+    print(todayTasks);
 
     if (state is TaskLoaded) {
       final currentState = state as TaskLoaded;
 
       emit(currentState.copyWith(
-          gTasks: gTasks, tasksDisplay: [], currentGTask: 'Today'));
+          gTasks: gTasks, tasksDisplay:todayTasks, currentGTask: 'Today'));
     } else {
       emit(TaskLoaded(
           gTasks: gTasks,
-          tasksDisplay: [],
+          tasksDisplay: todayTasks,
           refresh: 0,
           currentGTask: 'Today',
           taskFavorite: []));
@@ -75,8 +79,9 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
   FutureOr<void> _addTask(TaskAddEvent event, Emitter<TaskState> emit) async {
     if (state is TaskLoaded) {
       final currentState = state as TaskLoaded;
-      Dio dio = Dio();
-      final String url = 'http://192.168.1.231:5000/task';
+      Dio dio = UserRepository.dio;
+
+      final String url = '/task';
 
       final data = {
         "title": event.title,
@@ -87,36 +92,27 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
 
       print(DateTime.now().toUtc());
 
-      final response = await dio.post(url,
-          options: Options(headers: {
-            "Authorization":
-                "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Im1haWwiOiIyMDUyMTM2NkBnbS51aXQuZWR1LnZuIn0sImlhdCI6MTY4NDY3Njk1NiwiZXhwIjoxNjg0NzYzMzU2fQ.UmTeMyAa68cGc8WPbuwUfhXI8pH_aVwDZ15Rzrz8IRI"
-          }),
-          data: data);
+      final token = await FlutterSecureStorage().read(key: 'accessToken');
+
+      final response = await dio.post(url, data: data);
 
       print(response.data['data']['id']);
 
-      dio.put(
-          'http://192.168.1.231:5000/task/${response.data['data']['id']}/move',
-          options: Options(headers: {
-            "Authorization":
-                "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Im1haWwiOiIyMDUyMTM2NkBnbS51aXQuZWR1LnZuIn0sImlhdCI6MTY4NDY3Njk1NiwiZXhwIjoxNjg0NzYzMzU2fQ.UmTeMyAa68cGc8WPbuwUfhXI8pH_aVwDZ15Rzrz8IRI"
-          }),
-          data: {
-            "groupTaskId": currentState.gTasks
-                .where(
-                  (element) => element.name == 'Today',
-                )
-                .first
-                .id
-          });
+      dio.put('/task/${response.data['data']['id']}/move', data: {
+        "groupTaskId": currentState.gTasks
+            .where(
+              (element) => element.name == 'Today',
+            )
+            .first
+            .id
+      });
       add(TaskLoadEvent());
     }
   }
 
   FutureOr<void> _onMarkDone(
       TaskMarkCompletedEvent event, Emitter<TaskState> emit) async {
-    Dio dio = Dio();
+    Dio dio = UserRepository.dio;
     await dio.put('http://192.168.1.231:5000/task/${event.task.id}/toggle-mark',
         options: Options(headers: {
           "Authorization":
@@ -127,7 +123,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
 
   FutureOr<void> _onFavorite(
       TaskFavoriteEvent event, Emitter<TaskState> emit) async {
-    Dio dio = Dio();
+    Dio dio = UserRepository.dio;
     await dio.put('http://192.168.1.231:5000/task/${event.task.id}/toggle-favo',
         options: Options(headers: {
           "Authorization":
@@ -158,7 +154,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
 
   FutureOr<void> _onSaveChange(
       TaskSaveChangeTaskEvent event, Emitter<TaskState> emit) async {
-    Dio dio = Dio();
+    Dio dio = UserRepository.dio;
     if (state is TaskLoaded) {
       final currentState = state as TaskLoaded;
 
@@ -254,7 +250,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
     if (state is TaskLoaded) {
       final currentState = state as TaskLoaded;
 
-      Dio dio = Dio();
+      Dio dio = UserRepository.dio;
 
       print(currentState.currentTask!.id);
 
@@ -282,8 +278,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
 
       if (event.gTaskId == -1) {
         add(TaskLoadAllFavoriteEvent());
-        emit(currentState.copyWith( gTaskSelected: 'Favorite'));
-        
+        emit(currentState.copyWith(gTaskSelected: 'Favorite'));
       } else {
         final resultList = currentState.gTasks
             .firstWhere((element) => element.id == event.gTaskId)
@@ -301,7 +296,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
 
   FutureOr<void> _onAddGTask(
       TaskAddGTaskEvent event, Emitter<TaskState> emit) async {
-    final Dio dio = Dio();
+    final Dio dio = UserRepository.dio;
 
     await dio.post('http://192.168.1.231:5000/gtask',
         options: Options(
@@ -317,7 +312,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
 
   FutureOr<void> _onCompleteSubTask(
       TaskCompleteSubtaskEvent event, Emitter<TaskState> emit) async {
-    final Dio dio = Dio();
+    final Dio dio = UserRepository.dio;
     await dio.put(
       'http://192.168.1.231:5000/subtask/${event.id}/toggle-mark',
       options: Options(
@@ -335,7 +330,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
     if (state is TaskLoaded) {
       final currentState = state as TaskLoaded;
 
-      Dio dio = Dio();
+      Dio dio = UserRepository.dio;
 
       final response = await dio.get('http://192.168.1.231:5000/task/fav',
           options: Options(headers: {
@@ -343,8 +338,9 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
                 "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Im1haWwiOiIyMDUyMTM2NkBnbS51aXQuZWR1LnZuIn0sImlhdCI6MTY4NDY3Njk1NiwiZXhwIjoxNjg0NzYzMzU2fQ.UmTeMyAa68cGc8WPbuwUfhXI8pH_aVwDZ15Rzrz8IRI"
           }));
       emit(currentState.copyWith(
-          tasksDisplay:
-              (response.data['data'] as List).map((e) => Task.fromJson(e)).toList()));
+          tasksDisplay: (response.data['data'] as List)
+              .map((e) => Task.fromJson(e))
+              .toList()));
     }
   }
 }

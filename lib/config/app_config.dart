@@ -1,5 +1,5 @@
 class AppConfig {
-  static const String mainUrl = "http://192.168.0.108:5000";
+  static const String mainUrl = "http://192.168.1.131:5000";
   static const String loginUrl = '$mainUrl/auth/login';
   static const String registerUrl = '/auth/register';
   static const String logoutUrl = '/auth/logout';
