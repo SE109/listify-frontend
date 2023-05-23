@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
+import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 
 import '../../repositories/user_repository.dart';
@@ -15,17 +16,11 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
       emit(RegisterLoading());
       try{
         final response = await userRepository.register(event.lastName, event.firstName, event.phone, event.email, event.password);
-        final json = jsonDecode(response.body);
-        if(response.statusCode==201){
-          event.clear();
-          emit(RegisterSuccess(message: json['message']));
-        }
-        else{
-          emit(RegisterFailure(error: json['message']));
-        }
+        event.clear();
+        emit(RegisterSuccess(message: response.data['message']));
         emit(RegisterInitial());
-      }catch(e){
-        emit(RegisterFailure(error: e.toString()));
+      }on DioError catch(e){
+        emit(RegisterFailure(error: e.response!.data['message']));
       }
     });
   }

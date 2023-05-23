@@ -48,9 +48,11 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
                     readOnly: readOnly,
                     enabled: widget.enabled,
                     obscuringCharacter: '●',
+                    keyboardType: widget.textInputType,
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
                     decoration: InputDecoration(
                         border: OutlineInputBorder(),
+                      
                         label: Text(widget.label!),
                         hintStyle: TextStyle(color: AppConstants.grey, fontSize: 16, fontWeight: FontWeight.w400),
                         prefixIcon: widget.prefixIcon,

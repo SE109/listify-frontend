@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:intl/intl.dart';
@@ -52,21 +51,21 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
         )
         .taskList;
 
-    todayTasks.forEach(
-      (e) => print(e.title),
-    );
+    // todayTasks.forEach(
+    //   (e) => print(e.title),
+    // );
 
-    print(todayTasks);
+    // print(todayTasks);
 
     if (state is TaskLoaded) {
       final currentState = state as TaskLoaded;
 
       emit(currentState.copyWith(
-          gTasks: gTasks, tasksDisplay: todayTasks, currentGTask: 'Today'));
+          gTasks: gTasks, tasksDisplay: [], currentGTask: 'Today'));
     } else {
       emit(TaskLoaded(
           gTasks: gTasks,
-          tasksDisplay: todayTasks,
+          tasksDisplay: [],
           refresh: 0,
           currentGTask: 'Today',
           taskFavorite: []));

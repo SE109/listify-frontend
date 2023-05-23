@@ -11,6 +11,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<AppStarted>((event, emit) async {
       final bool hasToken = await userRepository.hasToken();
       if(hasToken){
+        final token = await userRepository.getToken();
+        UserRepository.setupInterceptors(token);
         emit(AuthAuthenticated());
       }
       else{
@@ -19,12 +21,15 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     });
     on<LoggedIn>((event, emit) async {
       emit(AuthLoading());
-      await userRepository.persisteToken(event.token);
+      await userRepository.persisteToken(event.accessToken, event.refreshToken);
+      final token = await userRepository.getToken();
+      UserRepository.setupInterceptors(token);
       emit(AuthAuthenticated());
     });
     on<LoggedOut>((event, emit) async {
-      emit(AuthLoading());
-      await userRepository.deleteToken();                           
+      emit(AuthLoading()); 
+      await userRepository.logout();
+      await userRepository.deleteToken();  
       emit(AuthUnAuthenticated());
     });
   }

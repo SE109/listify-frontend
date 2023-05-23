@@ -1,21 +1,27 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:listify/blocs/user/user_bloc.dart';
 import 'package:listify/repositories/user_repository.dart';
 import 'package:listify/routes/app_routes.dart';
 import 'package:listify/views/pages/drawer/app_drawer.dart';
 import 'package:listify/views/pages/home_page.dart';
-import 'package:listify/views/pages/login_page.dart';
-import 'package:listify/views/pages/profile_page.dart';
-import 'package:listify/views/pages/update_profile_page.dart';
+import 'package:listify/views/pages/login_register/login_page.dart';
+import 'package:listify/views/pages/user_profile/profile_page.dart';
+
 
 import 'blocs/auth/auth_bloc.dart';
 
+import 'blocs/login/login_bloc.dart';
 import 'blocs/task/task_bloc.dart';
 import 'config/themes.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   final UserRepository userRepository= UserRepository();
   Bloc.observer = SimpleBlocObserver();
+  await Firebase.initializeApp();
   runApp(MyApp(userRepository: userRepository,));
 }
 
@@ -29,7 +35,9 @@ class MyApp extends StatelessWidget {
         BlocProvider(
           create: (context) => TaskBloc()..add(TaskLoadEvent()),
         ),
-        BlocProvider(create: (context) => AuthBloc(userRepository)..add(AppStarted()))
+        BlocProvider(create: (context) => AuthBloc(userRepository)..add(AppStarted())),
+        BlocProvider(create: (context) => UserBloc()..add(GetInfo())),
+        BlocProvider(create: (context) => LoginBloc(authBloc: BlocProvider.of<AuthBloc>(context), userRepository: userRepository)),
       ],
       child: MaterialApp(
         // title: 'Listify',
@@ -37,25 +45,28 @@ class MyApp extends StatelessWidget {
         theme:  AppTheme.darkTheme,
         onGenerateRoute: AppRoutes().getRoute,
         home: Scaffold(
-          drawer: const AppDrawer(),
-          body: BlocBuilder<AuthBloc,AuthState>(
-            builder: (context1, state) {
-              if(state is AuthLoading){
-                return const CircularProgressIndicator();
-              }
-              else if(state is AuthAuthenticated){
-                return HomePage();
-                // return UpdateProfilePage();
-              }
-              else if(state is AuthUnAuthenticated){
-                return LoginPage(userRepository: userRepository,);
-              }
-              else{
-                return const CircularProgressIndicator();
-              }
-          },),
+            body: BlocBuilder<AuthBloc,AuthState>(
+              builder: (context1, state) {
+                if(state is AuthLoading){
+                  return Center(child: const CircularProgressIndicator());
+                }
+                else if(state is AuthAuthenticated){
+                  // return HomePage();
+                  // return UpdateProfilePage();
+                  return ProfilePage();
+                  // return Container(child: Center(child: ElevatedButton(child: Text("test"),onPressed: () {
+                  //   userRepository.refreshToken  ();
+                  // },)),);
+                }
+                else if(state is AuthUnAuthenticated){
+                  return LoginPage(userRepository: userRepository,);
+                }
+                else{
+                  return Center(child: const CircularProgressIndicator());
+                }
+            },),
+          ),
         ),
-      ),
     );
   }
 }

@@ -1,10 +1,12 @@
-class User {
+import 'package:equatable/equatable.dart';
+
+class User extends Equatable{
     final String mail;
     final String firstName;
     final String lastName;
     final String avatar;
-    final int phoneNum;
-    final dynamic dateOfBirth;
+    final String phoneNum;
+    final DateTime? dateOfBirth;
 
     User({
         required this.mail,
@@ -12,7 +14,7 @@ class User {
         required this.lastName,
         required this.avatar,
         required this.phoneNum,
-        this.dateOfBirth,
+        required this.dateOfBirth,
     });
 
     User copyWith({
@@ -20,8 +22,8 @@ class User {
         String? firstName,
         String? lastName,
         String? avatar,
-        int? phoneNum,
-        dynamic dateOfBirth,
+        String? phoneNum,
+        DateTime? dateOfBirth,
     }) => 
         User(
             mail: mail ?? this.mail,
@@ -38,7 +40,7 @@ class User {
         lastName: json["lastName"],
         avatar: json["avatar"],
         phoneNum: json["phoneNum"],
-        dateOfBirth: json["dateOfBirth"],
+        dateOfBirth: json["dateOfBirth"]!=null ? DateTime.parse(json["dateOfBirth"]):DateTime.now(),
     );
 
     Map<String, dynamic> toJson() => {
@@ -47,6 +49,10 @@ class User {
         "lastName": lastName,
         "avatar": avatar,
         "phoneNum": phoneNum,
-        "dateOfBirth": dateOfBirth,
+        "dateOfBirth": dateOfBirth!.toIso8601String(),
     };
+    
+      @override
+      // TODO: implement props
+      List<Object?> get props => [mail, firstName, lastName, avatar, phoneNum, dateOfBirth];
 }
