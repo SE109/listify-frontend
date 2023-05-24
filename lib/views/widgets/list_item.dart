@@ -1,8 +1,10 @@
-
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:listify/blocs/task/task_bloc.dart';
+import 'package:provider/provider.dart';
 
 import '../../models/task.dart';
-
+import '../pages/task_detail/task_detail.dart';
 
 class ListItem extends StatelessWidget {
   const ListItem({
@@ -26,7 +28,7 @@ class ListItem extends StatelessWidget {
           color: Theme.of(context).colorScheme.onErrorContainer,
         ),
       ),
-      child: task.description == null || task.description!.isEmpty
+      child: task.description == null || task.description.isEmpty
           ? OneLineListTile(task: task)
           : TwoLineListTile(task: task),
     );
@@ -43,53 +45,64 @@ class TwoLineListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
+    // final taskListsController = context.watch<TaskListsController>();
+    // final tasksController = context.watch<TasksController>();
 
     return GestureDetector(
-      // onTap: () => Navigator.push(
-      //   context,
-      //   MaterialPageRoute(
-      //     builder: (context) => ChangeNotifierProvider(
-      //       create: (_) => TaskContentController(
-      //         taskListsController,
-      //         tasksController,
-      //         task.id,
-      //       )..loadData(),
-      //       child: const TaskContentScreen(),
-      //     ),
-      //   ),
-      // ),
-      onTap:  () {},
+      onTap: () {
+        BlocProvider.of<TaskBloc>(context)
+            .add(TaskChangeCurrentEvent(task: task));
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ChangeNotifierProvider(
+              create: (_) {
+                // BlocProvider.of<TaskBloc>(context)
+                //     .add(TaskChangeCurrentEvent(task: task));
+              },
+              child:
+                  // Container()
+                  TaskContentScreen(
+                task: task,
+              ),
+            ),
+          ),
+        );
+      },
       child: ListTile(
         leading: IconButton(
-          icon: task.isCompleted!
+          icon: task.isCompleted
               ? const Icon(Icons.check_box_rounded)
               : const Icon(Icons.check_box_outline_blank_rounded),
-          // onPressed: () =>
-          //     tasksController.update(task.id, completed: !task.isCompleted!),
-          onPressed: () {},
+          onPressed: () {
+            BlocProvider.of<TaskBloc>(context)
+                .add(TaskMarkCompletedEvent(task: task));
+          },
         ),
         title: Text(
-          task.title!,
+          task.title,
           style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                decoration: task.isCompleted! ? TextDecoration.lineThrough : null,
+                decoration:
+                    task.isCompleted ? TextDecoration.lineThrough : null,
                 decorationThickness: 2,
               ),
         ),
         subtitle: Text(
-          task.description!,
+          task.description,
           style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                decoration: task.isCompleted! ? TextDecoration.lineThrough : null,
+                decoration:
+                    task.isCompleted ? TextDecoration.lineThrough : null,
                 decorationThickness: 1.5,
               ),
         ),
         trailing: IconButton(
-          icon: task.isFavorited!
+          icon: task.isFavorited
               ? const Icon(Icons.star_rounded)
               : const Icon(Icons.star_border_rounded),
-          // onPressed: () =>
-          //     tasksController.update(task.id, onFavorite: !task.isFavorited!),
-          onPressed: (){},
+          onPressed: () {
+            BlocProvider.of<TaskBloc>(context)
+                .add(TaskFavoriteEvent(task: task));
+          },
         ),
       ),
     );
@@ -106,49 +119,56 @@ class OneLineListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
+    // final taskListsController = context.watch<TaskListsController>();
+    // final tasksController = context.watch<TasksController>();
 
     return GestureDetector(
-      // onTap: () => Navigator.push(
-      //   context,
-      //   MaterialPageRoute(
-      //     builder: (context) => ChangeNotifierProvider(
-      //       create: (_) => TaskContentController(
-      //         taskListsController,
-      //         tasksController,
-      //         task.id,
-      //       )..loadData(),
-      //       child: const TaskContentScreen(),
-      //     ),
-      //   ),
-      // ),
-      onTap: (){},
+      onTap: () {
+        BlocProvider.of<TaskBloc>(context)
+            .add(TaskChangeCurrentEvent(task: task));
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ChangeNotifierProvider(
+              create: (_) {
+                // BlocProvider.of<TaskBloc>(context)
+                //     .add(TaskChangeCurrentEvent(task: task));
+              },
+              child:
+                  // Container()
+                  TaskContentScreen(
+                task: task,
+              ),
+            ),
+          ),
+        );
+      },
       child: ListTile(
         leading: IconButton(
-          icon: task.isCompleted!
+          icon: task.isCompleted
               ? const Icon(Icons.check_box_rounded)
               : const Icon(Icons.check_box_outline_blank_rounded),
-          // onPressed: () =>
-          //     tasksController.update(task.id, completed: !task.isCompleted!),
-
           onPressed: () {
-            
+            BlocProvider.of<TaskBloc>(context)
+                .add(TaskMarkCompletedEvent(task: task));
           },
         ),
         title: Text(
-          task.title!,
+          task.title,
           style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                decoration: task.isCompleted! ? TextDecoration.lineThrough : null,
+                decoration:
+                    task.isCompleted ? TextDecoration.lineThrough : null,
                 decorationThickness: 2,
               ),
         ),
         trailing: IconButton(
-          icon: task.isFavorited!
+          icon: task.isFavorited
               ? const Icon(Icons.star_rounded)
               : const Icon(Icons.star_border_rounded),
-          // onPressed: () =>
-          //     tasksController.update(task.id, onFavorite: !task.isCompleted),
-          onPressed:  (){},
+          onPressed: () {
+            BlocProvider.of<TaskBloc>(context)
+                .add(TaskFavoriteEvent(task: task));
+          },
         ),
       ),
     );

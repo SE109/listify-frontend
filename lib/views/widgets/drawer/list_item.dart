@@ -1,37 +1,37 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../../../blocs/appState/appState_cubit.dart';
-import '../../../models/group_task.dart';
+import 'package:listify/blocs/task/task_bloc.dart';
+import 'package:provider/provider.dart';
 
 class ListItem extends StatelessWidget {
   const ListItem({
     Key? key,
-    required this.groupTask,
-    this.badge = 0,
+    required this.id,
+    required this.title,
     required this.icon,
+    this.badge = 0,
   }) : super(key: key);
 
-  final GroupTask groupTask;
+  final int id;
+  final String title;
   final int badge;
   final Icon icon;
 
   @override
   Widget build(BuildContext context) {
-     final appStateCubit = BlocProvider.of<AppStateCubit>(context, listen: false);
+    // final appState = context.watch<AppState>();
 
     return GestureDetector(
       onTap: () {
-        appStateCubit.changeCurrentGroupTask(groupTask);
+        // appState.changeListId(id: id, name: title);
+        BlocProvider.of<TaskBloc>(context)
+            .add(TaskChangeGTaskListEvent(gTaskId: id));
         Scaffold.of(context).closeDrawer();
       },
       child: Container(
         decoration: BoxDecoration(
-          color: appStateCubit.currentGroupTask.id == groupTask.id
-              ? Theme.of(context).colorScheme.secondaryContainer
-              : null,
+          color:
+              false ? Theme.of(context).colorScheme.secondaryContainer : null,
           borderRadius: const BorderRadius.all(
             Radius.circular(100),
           ),
@@ -49,7 +49,7 @@ class ListItem extends StatelessWidget {
               const SizedBox(width: 12),
               Expanded(
                 child: Text(
-                  groupTask.name!,
+                  title,
                   style: Theme.of(context).textTheme.labelLarge,
                 ),
               ),

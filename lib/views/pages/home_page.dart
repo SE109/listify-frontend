@@ -1,22 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:listify/views/widgets/more_bottom_sheet.dart';
-import 'package:listify/views/widgets/today_list/today_list_body.dart';
+import 'package:provider/provider.dart';
 
-import '../../blocs/appState/appState_cubit.dart';
-import '../widgets/personal_list/personal_list_body.dart';
+import '../../blocs/task/task_bloc.dart';
+import '../widgets/bottomsheet/add_task_bottomsheet.dart';
+import '../widgets/bottomsheet/more_bottom_sheet.dart';
+import 'drawer/app_drawer.dart';
+import 'today_list.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final appState  =  BlocProvider.of<AppStateCubit>(context, listen: true);
     return Scaffold(
+      drawer: const AppDrawer(),
       backgroundColor: Theme.of(context).colorScheme.surface,
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () =>
-            _showAddTaskBottomSheet(context, appState.currentGroupTask.id!),
+        onPressed: () => _showAddTaskBottomSheet(context, 'uid'),
         label: const Text('Add'),
         icon: const Icon(Icons.add),
       ),
@@ -27,7 +28,17 @@ class HomePage extends StatelessWidget {
             pinned: false,
             snap: false,
             elevation: 0,
-            title: Text(appState.currentGroupTask.name!),
+            title: BlocBuilder<TaskBloc, TaskState>(
+              builder: (context, state) {
+                if(state is TaskLoaded){
+
+                return Text(state.gTaskSelected);
+                }
+                else {
+                  return Text('Listify');
+                }
+              },
+            ),
             centerTitle: true,
             leading: IconButton(
               onPressed: Scaffold.of(context).openDrawer,
@@ -39,29 +50,31 @@ class HomePage extends StatelessWidget {
                 icon: const Icon(Icons.more_horiz_rounded),
               )
             ],
-            bottom: const PreferredSize(
-              preferredSize: Size.fromHeight(75),
+            bottom: PreferredSize(
+              preferredSize: const Size.fromHeight(75),
               child: Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 8,
-                ),
-                // child: GestureDetector(
-                //   onTap: () => showSearch(
-                //     context: context,
-                //     delegate: TaskSearchDelegate(),
-                //   ),
-                //   child: const SearchBar(),
-                // ),
-              ),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 8,
+                  ),
+                  child: Container()
+
+                  // GestureDetector(
+                  //   onTap: () => showSearch(
+                  //     context: context,
+                  //     delegate: TaskSearchDelegate(),
+                  //   ),
+                  //   child: const SearchBar(),
+                  // ),
+                  ),
             ),
           ),
-          if (appState.currentGroupTask.id == -1)
-             const TodayListBody()
-          else if (appState.currentGroupTask.id == 0)
-             const SliverToBoxAdapter()
-          else
-            const PersonalListBody()
+          // if (currentListId == 'today')
+          const TodayListBody()
+          // else if (currentListId == 'favorites')
+          //   const FavoritesListBody()
+          // else
+          //   const PersonalListBody()
         ],
       ),
     );
@@ -90,7 +103,7 @@ class HomePage extends StatelessWidget {
           builder: (BuildContext context) {
             return Padding(
               padding: MediaQuery.of(context).viewInsets,
-              child: const MoreBottomSheet()
+              child: const MoreBottomSheet(),
             );
           },
         );
@@ -98,7 +111,7 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  Future<dynamic> _showAddTaskBottomSheet(BuildContext context, int listId) {
+  Future<dynamic> _showAddTaskBottomSheet(BuildContext context, String listId) {
     return showModalBottomSheet(
       context: context,
       shape: const RoundedRectangleBorder(
@@ -108,7 +121,12 @@ class HomePage extends StatelessWidget {
         ),
       ),
       enableDrag: false,
+      isScrollControlled: true,
       builder: (context) {
+        // return Container(
+        //     padding: EdgeInsets.only(
+        //         bottom: MediaQuery.of(context).viewInsets.bottom),
+        //     child: AddTaskBottomSheet(listId: listId));
         return BottomSheet(
           enableDrag: false,
           onClosing: () {},
@@ -120,8 +138,9 @@ class HomePage extends StatelessWidget {
           ),
           builder: (BuildContext context) {
             return Padding(
-              padding: MediaQuery.of(context).viewInsets,
-              child: Container(),
+              padding: EdgeInsets.only(
+                  bottom: MediaQuery.of(context).viewInsets.bottom),
+              child: AddTaskBottomSheet(listId: listId),
             );
           },
         );

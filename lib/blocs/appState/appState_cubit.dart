@@ -49,8 +49,8 @@ class AppStateCubit extends Cubit<AppStateState> {
       list.forEach((gt) {
       gt.taskList!.forEach((t) {
         final today = DateTime.now();
-        final fromDate = DateTime.parse(t.fromDate!);
-        final toDate = DateTime.parse(t.toDate!);
+        final fromDate = t.fromDate;
+        final toDate = t.toDate;
         if (today.isAfter(fromDate) && today.isBefore(toDate)) {
           fav.add(t);
         }
