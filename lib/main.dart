@@ -10,6 +10,7 @@ import 'package:listify/views/pages/home_page.dart';
 import 'package:listify/views/pages/login_register/login_page.dart';
 import 'package:listify/views/pages/user_profile/profile_page.dart';
 
+import 'blocs/appState/appState_cubit.dart';
 import 'blocs/auth/auth_bloc.dart';
 
 import 'blocs/login/login_bloc.dart';
@@ -42,7 +43,10 @@ class MyApp extends StatelessWidget {
         BlocProvider(
             create: (context) => LoginBloc(
                 authBloc: BlocProvider.of<AuthBloc>(context),
-                userRepository: userRepository)),
+                userRepository: userRepository),
+                
+        ),
+        BlocProvider(create: (context) => AppStateCubit()..checkTheme()),
       ],
       child: MaterialApp(
         // title: 'Listify',
@@ -75,6 +79,16 @@ class MyApp extends StatelessWidget {
         ),
       ),
     );
+  }
+  
+  ThemeData? getTheme(AppStateCubit themeCubit) {
+    if(themeCubit.theme == 'light'){
+      return AppTheme.lightTheme;
+    }
+    else if (themeCubit.theme == 'dark') {
+      return AppTheme.darkTheme;
+    } 
+    return null;
   }
 }
 

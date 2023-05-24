@@ -87,6 +87,6 @@ class TaskCompleteSubtaskEvent extends TaskEvent {
   const TaskCompleteSubtaskEvent({required this.id});
 }
 
-class TaskLoadAllFavoriteEvent extends TaskEvent {
-  
-}
+class TaskLoadAllFavoriteEvent extends TaskEvent {}
+
+class TaskReloadTaskEvent extends TaskEvent {}

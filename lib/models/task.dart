@@ -1,13 +1,3 @@
-// To parse this JSON data, do
-//
-//     final task = taskFromJson(jsonString);
-
-import 'dart:convert';
-
-Task taskFromJson(String str) => Task.fromJson(json.decode(str));
-
-String taskToJson(Task data) => json.encode(data.toJson());
-
 class Task {
   final int id;
   final String title;
