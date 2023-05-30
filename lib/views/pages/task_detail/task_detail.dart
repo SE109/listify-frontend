@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:listify/blocs/task/task_bloc.dart';
 import 'package:listify/models/task.dart';
-import 'package:provider/provider.dart';
+import 'package:listify/views/widgets/voice_screen.dart';
 
 import 'date_item.dart';
 import 'detail_item.dart';
@@ -13,7 +13,7 @@ import 'subtasks_item.dart';
 class TaskContentScreen extends StatefulWidget {
   const TaskContentScreen({super.key, required this.task});
 
-  final Task task;
+  final MyTask task;
 
   @override
   State<TaskContentScreen> createState() => _TaskContentScreenState();
@@ -43,6 +43,12 @@ class _TaskContentScreenState extends State<TaskContentScreen> {
       backgroundColor: Theme.of(context).colorScheme.background,
       appBar: AppBar(
         actions: [
+           IconButton(
+            onPressed: ()  {
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) => VoiceScreen(task: widget.task)));
+            },
+            icon: const Icon(Icons.keyboard_voice_outlined),
+          ),
           BlocBuilder<TaskBloc, TaskState>(
             builder: (context, state) {
               if (state is TaskLoaded) {
@@ -69,12 +75,13 @@ class _TaskContentScreenState extends State<TaskContentScreen> {
             onPressed: () async {
               Navigator.pop(context);
               await Future.delayed(
-                  Duration(milliseconds: 300),
+                  const Duration(milliseconds: 300),
                   () => BlocProvider.of<TaskBloc>(context)
                       .add(TaskDeleteEvent()));
             },
             icon: const Icon(Icons.delete_rounded),
           ),
+         
         ],
       ),
       floatingActionButton: FloatingActionButton.extended(

@@ -1,4 +1,6 @@
-class Task {
+import 'package:listify/models/voice.dart';
+
+class MyTask {
   final int id;
   final String title;
   final String description;
@@ -7,9 +9,9 @@ class Task {
   final bool isCompleted;
   final bool isFavorited;
   final List<SubTask> subTaskList;
-  final List<dynamic>? voiceList;
+  final List<Voice> voiceList;
 
-  Task({
+  MyTask({
     required this.id,
     required this.title,
     required this.description,
@@ -18,9 +20,9 @@ class Task {
     required this.isCompleted,
     required this.isFavorited,
     this.subTaskList = const [],
-    this.voiceList,
+    this.voiceList = const [],
   });
-  Task copyWith({
+  MyTask copyWith({
     int? id,
     String? title,
     String? description,
@@ -29,9 +31,9 @@ class Task {
     bool? isCompleted,
     bool? isFavorited,
     List<SubTask>? subTaskList,
-    List<dynamic>? voiceList,
+    List<Voice>? voiceList,
   }) =>
-      Task(
+      MyTask(
         id: id ?? this.id,
         title: title ?? this.title,
         description: description ?? this.description,
@@ -43,7 +45,7 @@ class Task {
         voiceList: voiceList ?? this.voiceList,
       );
 
-  factory Task.fromJson(Map<String, dynamic> json) => Task(
+  factory MyTask.fromJson(Map<String, dynamic> json) => MyTask(
         id: json["id"],
         title: json["title"],
         description: json["description"],
@@ -56,7 +58,7 @@ class Task {
                 json["subTaskList"].map((x) => SubTask.fromJson(x)))
             : [],
         voiceList: json["voiceList"] != null
-            ? List<dynamic>.from(json["voiceList"].map((x) => x))
+            ? List<Voice>.from(json["voiceList"].map((x) => Voice.fromJson(x)))
             : [],
       );
 
@@ -71,7 +73,7 @@ class Task {
         "isCompleted": isCompleted,
         "isFavorited": isFavorited,
         "subTaskList": List<SubTask>.from(subTaskList.map((x) => x.toJson())),
-        // "voiceList": List<dynamic>.from(voiceList.map((x) => x)),
+        "voiceList": List<Voice>.from(voiceList.map((x) => x.toJson())),
       };
 }
 

@@ -12,7 +12,7 @@ class DateItem extends StatefulWidget {
     required this.task,
   }) : super(key: key);
 
-  final Task task;
+  final MyTask task;
 
   @override
   State<DateItem> createState() => _DateItemState();

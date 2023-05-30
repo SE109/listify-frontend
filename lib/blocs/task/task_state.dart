@@ -11,11 +11,11 @@ class TaskLoading extends TaskState {}
 
 class TaskLoaded extends TaskState {
   final List<GTask> gTasks;
-  final List<Task> tasksDisplay;
-  final List<Task> taskFavorite;
+  final List<MyTask> tasksDisplay;
+  final List<MyTask> taskFavorite;
   final String gTaskSelected;
   final int refresh;
-  Task? currentTask;
+  MyTask? currentTask;
   String? currentGTask;
 
   TaskLoaded(
@@ -29,12 +29,12 @@ class TaskLoaded extends TaskState {
 
   TaskLoaded copyWith({
     final List<GTask>? gTasks,
-    final List<Task>? tasksDisplay,
+    final List<MyTask>? tasksDisplay,
     final String? gTaskSelected,
-    final Task? currentTask,
+    final MyTask? currentTask,
     final int? refresh,
     final String? currentGTask,
-    final List<Task>? taskFavorite
+    final List<MyTask>? taskFavorite
   }) {
     return TaskLoaded(
       gTasks: gTasks ?? this.gTasks,

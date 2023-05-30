@@ -9,7 +9,7 @@ class HeadlineTitle extends StatelessWidget {
     required this.textEditingController,
   }) : super(key: key);
 
-  final Task task;
+  final MyTask task;
   final TextEditingController textEditingController;
 
   @override

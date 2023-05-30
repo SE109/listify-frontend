@@ -14,7 +14,7 @@ class ProgressSection extends StatelessWidget {
     required this.tasks,
   }) : super(key: key);
 
-  final List<Task> tasks;
+  final List<MyTask> tasks;
 
   @override
   Widget build(BuildContext context) {
@@ -65,7 +65,7 @@ class DateCategorizedTasks extends StatelessWidget {
   });
 
   // final DateTime date;
-  final List<Task> tasks;
+  final List<MyTask> tasks;
   @override
   Widget build(BuildContext context) {
     // final list = tasks
@@ -102,7 +102,7 @@ class NoDateTasks extends StatelessWidget {
     required this.tasks,
   }) : super(key: key);
 
-  final List<Task> tasks;
+  final List<MyTask> tasks;
 
   @override
   Widget build(BuildContext context) {
@@ -122,7 +122,7 @@ class NoDateTasks extends StatelessWidget {
           physics: const NeverScrollableScrollPhysics(),
           itemCount: 4,
           itemBuilder: (context, index) => ListItem(
-              task: Task(
+              task: MyTask(
                   id: 1,
                   title: 'title',
                   description: 'description',

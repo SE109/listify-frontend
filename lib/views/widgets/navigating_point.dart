@@ -3,7 +3,8 @@
 import 'package:flutter/material.dart';
 import 'package:listify/views/pages/home_page.dart';
 import 'package:listify/views/pages/settings/setting_screen.dart';
-import 'package:listify/views/widgets/drawer/app_drawer.dart';
+
+import '../pages/drawer/app_drawer.dart';
 
 
 class NavigatingPoint extends StatefulWidget {
@@ -30,6 +31,7 @@ class _NavigatingPointState extends State<NavigatingPoint> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       drawer: const AppDrawer(),
       body: screens[currentIndex],
       bottomNavigationBar: NavigationBar(

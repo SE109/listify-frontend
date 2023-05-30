@@ -23,7 +23,7 @@ class TaskAddEvent extends TaskEvent {
 }
 
 class TaskMarkCompletedEvent extends TaskEvent {
-  final Task task;
+  final MyTask task;
 
   const TaskMarkCompletedEvent({required this.task});
 
@@ -32,7 +32,7 @@ class TaskMarkCompletedEvent extends TaskEvent {
 }
 
 class TaskFavoriteEvent extends TaskEvent {
-  final Task task;
+  final MyTask task;
 
   const TaskFavoriteEvent({required this.task});
   @override
@@ -40,7 +40,7 @@ class TaskFavoriteEvent extends TaskEvent {
 }
 
 class TaskChangeCurrentEvent extends TaskEvent {
-  final Task task;
+  final MyTask task;
 
   const TaskChangeCurrentEvent({required this.task});
   @override
@@ -80,7 +80,19 @@ class TaskAddGTaskEvent extends TaskEvent {
 
   const TaskAddGTaskEvent({required this.name});
 }
-
+class TaskUpdateGTaskEvent extends TaskEvent {
+  final String name;
+  final GTask gTask;
+  const TaskUpdateGTaskEvent({required this.name , required this.gTask});
+}
+class TaskDeleteAllCompletedTaskEvent extends TaskEvent {
+  final GTask gTask;
+  const TaskDeleteAllCompletedTaskEvent({required this.gTask});
+}
+class TaskDeleteGroupTask extends TaskEvent {
+  final GTask gTask;
+  const TaskDeleteGroupTask({required this.gTask});
+}
 class TaskCompleteSubtaskEvent extends TaskEvent {
   final String id;
 

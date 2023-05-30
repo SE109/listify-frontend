@@ -1,17 +1,15 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
+
 class Voice {
-  int? id;
-  int? taskId;
-  String? name;
-  String? file;
+  final int id;
+  final int taskId;
+  final String name;
+  final String file;
 
-  Voice({this.id, this.taskId, this.name, this.file});
+  Voice({required this.id, required this.taskId, required this.name,
+      required this.file});
 
-  Voice.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    taskId = json['taskId'];
-    name = json['name'];
-    file = json['file'];
-  }
+
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
@@ -20,5 +18,31 @@ class Voice {
     data['name'] = name;
     data['file'] = file;
     return data;
+  }
+
+
+
+  factory Voice.fromJson(Map<String, dynamic> map) {
+    return Voice(
+      id: map['id'] as int,
+      taskId: map['taskId'] as int,
+      name: map['name'] as String,
+      file: map['file'] as String,
+    );
+  }
+
+
+  Voice copyWith({
+    int? id,
+    int? taskId,
+    String? name,
+    String? file,
+  }) {
+    return Voice(
+      id: id ?? this.id,
+      taskId: taskId ?? this.taskId,
+      name: name ?? this.name,
+      file: file ?? this.file,
+    );
   }
 }

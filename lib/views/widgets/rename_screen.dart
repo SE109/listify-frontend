@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:listify/blocs/group_task/group_task_bloc.dart';
+import 'package:listify/blocs/task/task_bloc.dart';
 
 import '../../blocs/appState/appState_cubit.dart';
+import '../../models/g_task.dart';
 
 class RenameScreen extends StatefulWidget {
   const RenameScreen({
     super.key,
-    required this.initName,
+    required this.gTask,
   });
 
-  final String initName;
+  final GTask gTask;
 
   @override
   State<RenameScreen> createState() => _RenameScreenState();
@@ -22,7 +23,7 @@ class _RenameScreenState extends State<RenameScreen> {
   @override
   void initState() {
     super.initState();
-    inputName = widget.initName;
+    inputName = widget.gTask.name;
   }
 
   @override
@@ -34,11 +35,12 @@ class _RenameScreenState extends State<RenameScreen> {
         centerTitle: true,
         actions: [
           TextButton(
-            onPressed: inputName.isEmpty
+            onPressed: inputName.isEmpty || inputName == widget.gTask.name
                 ? null
                 : () {
-                  context.read<GroupTaskBloc>().add(UpdateGroupTask(groupTask: appState.currentGroupTask, name: inputName));
-                  appState.changeCurrentGroupTask(appState.currentGroupTask.copyWith(name: inputName));
+                  context.read<TaskBloc>().add(TaskUpdateGTaskEvent(gTask: widget.gTask, name: inputName));
+                  // appState.changeCurrentGroupTask(appState.currentGroupTask.copyWith(name: inputName));
+                  
                   Navigator.pop(context);
                 },
             child: const Text('Done'),

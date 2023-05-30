@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:provider/provider.dart';
 
 import '../../blocs/task/task_bloc.dart';
+import '../../models/g_task.dart';
+import '../../models/task.dart';
 import '../widgets/bottomsheet/add_task_bottomsheet.dart';
 import '../widgets/bottomsheet/more_bottom_sheet.dart';
 import 'drawer/app_drawer.dart';
@@ -30,12 +31,10 @@ class HomePage extends StatelessWidget {
             elevation: 0,
             title: BlocBuilder<TaskBloc, TaskState>(
               builder: (context, state) {
-                if(state is TaskLoaded){
-
-                return Text(state.gTaskSelected);
-                }
-                else {
-                  return Text('Listify');
+                if (state is TaskLoaded) {
+                  return Text(state.gTaskSelected);
+                } else {
+                  return const Text('Listify');
                 }
               },
             ),
@@ -45,9 +44,22 @@ class HomePage extends StatelessWidget {
               icon: const Icon(Icons.menu),
             ),
             actions: [
-              IconButton(
-                onPressed: () => _showMoreBottomSheet(context),
-                icon: const Icon(Icons.more_horiz_rounded),
+              BlocBuilder<TaskBloc, TaskState>(
+                builder: (context, state) {
+                 
+                  if(state is TaskLoaded) {
+                    return IconButton(
+                      onPressed: () => _showMoreBottomSheet(context),
+                      icon: const Icon(Icons.more_horiz_rounded),
+                    );
+                  }
+                  else {
+                    return IconButton(
+                      onPressed: () {},
+                      icon: const Icon(Icons.more_horiz_rounded),
+                    );
+                  }
+                },
               )
             ],
             bottom: PreferredSize(

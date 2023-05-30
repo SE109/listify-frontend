@@ -1,52 +1,71 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../../blocs/task/task_bloc.dart';
+import '../../../models/g_task.dart';
+import '../rename_screen.dart';
 
 class MoreBottomSheet extends StatelessWidget {
   const MoreBottomSheet({super.key});
-
   @override
   Widget build(BuildContext context) {
-
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          FunctionItem(
-            title: 'Delete all completed tasks',
-            onPressed: () { },
-          ),
-          FunctionItem(
-            title: 'Rename list',
-            onPressed: true
-                ? null
-                : () async {
-                    // final String newName = await Navigator.push(
-                    //   context,
-                    //   MaterialPageRoute(
-                    //     builder: (context) =>
-                    //         RenameScreen(initName: appState.currentListName),
-                    //   ),
-                    // );
-
-                    // await taskListsController
-                    //     .updateList(appState.currentListId, name: newName)
-                    //     .then((_) => Navigator.pop(context));
+    return BlocBuilder<TaskBloc, TaskState>(
+      builder: (context, state) {
+        if(state is TaskLoaded){
+          return Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                FunctionItem(
+                  title: 'Delete all completed tasks',
+                  onPressed: () {
+                    Navigator.pop(context);
+                    var gTask = GTask(id: -1, name: 'Favorite', taskList: []);
+                    if(state.gTaskSelected != 'Favorite') {
+                      gTask = state.gTasks.firstWhere(
+                          (element) => element.name == state.gTaskSelected);
+                    }
+                    context
+                        .read<TaskBloc>()
+                        .add(TaskDeleteAllCompletedTaskEvent(gTask: gTask));
                   },
-          ),
-          FunctionItem(
-            title: 'Delete list',
-            onPressed: false
-                ? null
-                : () async {
-                    // await taskListsController
-                    //     .deleteList(appState.currentListId)
-                    //     .then((_) => Navigator.pop(context));
-                  },
-          ),
-        ],
-      ),
+                ),
+                FunctionItem(
+                  title: 'Rename list',
+                  onPressed: state.gTaskSelected == 'Today' || state.gTaskSelected == 'Favorite'
+                      ? null
+                      : () {
+                        var gTask = state.gTasks.firstWhere((element) => element.name == state.gTaskSelected);
+                          Navigator.pop(context);
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => RenameScreen(
+                                    gTask: gTask,
+                                  )));
+                        },
+                ),
+                FunctionItem(
+                  title: 'Delete list',
+                  onPressed: state.gTaskSelected == 'Today' ||
+                          state.gTaskSelected == 'Favorite'
+                      ? null
+                      : () async {
+                           var gTask = state.gTasks.firstWhere(
+                              (element) => element.name == state.gTaskSelected);
+                            Navigator.pop(context);
+                            context.read<TaskBloc>().add(
+                              TaskDeleteGroupTask(gTask: gTask));
+                        },
+                ),
+              ],
+            ),
+          );
+        }
+        else{
+          return Container();
+        }
+      },
     );
   }
 }

@@ -11,7 +11,7 @@ class ListSelector extends StatefulWidget {
     Key? key,
     required this.task,
   }) : super(key: key);
-  final Task task;
+  final MyTask task;
 
   @override
   State<ListSelector> createState() => _ListSelectorState();

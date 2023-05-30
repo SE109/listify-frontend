@@ -12,7 +12,7 @@ class ListItem extends StatelessWidget {
     required this.task,
   }) : super(key: key);
 
-  final Task task;
+  final MyTask task;
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +41,7 @@ class TwoLineListTile extends StatelessWidget {
     required this.task,
   }) : super(key: key);
 
-  final Task task;
+  final MyTask task;
 
   @override
   Widget build(BuildContext context) {
@@ -115,7 +115,7 @@ class OneLineListTile extends StatelessWidget {
     required this.task,
   }) : super(key: key);
 
-  final Task task;
+  final MyTask task;
 
   @override
   Widget build(BuildContext context) {

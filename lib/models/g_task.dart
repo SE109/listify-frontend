@@ -3,7 +3,7 @@ import 'package:listify/models/task.dart';
 class GTask {
     final int id;
     final String name;
-    final List<Task> taskList;
+    final List<MyTask> taskList;
 
     GTask({
         required this.id,
@@ -14,7 +14,7 @@ class GTask {
     GTask copyWith({
         int? id,
         String? name,
-        List<Task>? taskList,
+        List<MyTask>? taskList,
     }) => 
         GTask(
             id: id ?? this.id,
@@ -25,7 +25,7 @@ class GTask {
     factory GTask.fromJson(Map<String, dynamic> json) => GTask(
         id: json["id"],
         name: json["name"],
-        taskList: List<Task>.from(json["taskList"].map((x) => Task.fromJson(x))),
+        taskList: List<MyTask>.from(json["taskList"].map((x) => MyTask.fromJson(x))),
     );
 
     Map<String, dynamic> toJson() => {

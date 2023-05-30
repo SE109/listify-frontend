@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:listify/repositories/user_repository.dart';
+import 'package:listify/views/widgets/rename_screen.dart';
 
 
 import '../models/user.dart';
@@ -42,6 +43,7 @@ class AppRoutes {
       case AppRoutes.newPassPage:{
         return MaterialPageRoute(builder: (context) => const NewPassPage(),settings: settings);
       }
+      
     }
     return null;
   }

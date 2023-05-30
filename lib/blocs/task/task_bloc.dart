@@ -4,7 +4,6 @@ import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:intl/intl.dart';
 import 'package:listify/models/g_task.dart';
 import 'package:listify/repositories/user_repository.dart';
 import 'package:logger/logger.dart';
@@ -27,9 +26,12 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
     on<TaskDeleteEvent>(_onDeleteTask);
     on<TaskChangeGTaskListEvent>(_onChangeGTaskList);
     on<TaskAddGTaskEvent>(_onAddGTask);
+    on<TaskUpdateGTaskEvent>(_onUpdateGTask);
     on<TaskCompleteSubtaskEvent>(_onCompleteSubTask);
     on<TaskLoadAllFavoriteEvent>(_onLoadAllFavorite);
     on<TaskReloadTaskEvent>(_reLoadAllTask);
+    on<TaskDeleteAllCompletedTaskEvent>(_onDeleteTaskCompleted);
+    on<TaskDeleteGroupTask>(_onDeleteTaskGroup);
   }
 
   FutureOr<void> _loadAllTask(
@@ -37,7 +39,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
     // print()
     Dio dio = UserRepository.dio;
 
-    final token = await FlutterSecureStorage().read(key: 'accessToken');
+    final token = await const FlutterSecureStorage().read(key: 'accessToken');
 
     final response = await dio.get(
       '/gtask',
@@ -50,7 +52,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
     print('ngyu');
     // print(gTasks[0].taskList[0].description);
 
-    final List<Task> todayTasks = gTasks
+    final List<MyTask> todayTasks = gTasks
         .firstWhere(
           (element) => element.name == 'Today',
         )
@@ -72,7 +74,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
           tasksDisplay: todayTasks,
           refresh: 0,
           currentGTask: 'Today',
-          taskFavorite: []));
+          taskFavorite: const []));
     }
   }
 
@@ -98,7 +100,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
       print('ngyu');
       // print(gTasks[0].taskList[0].description);
 
-      final List<Task> todayTasks = gTasks
+      final List<MyTask> todayTasks = gTasks
           .firstWhere(
             (element) => element.name == currentState.gTaskSelected,
           )
@@ -128,7 +130,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
       final currentState = state as TaskLoaded;
       Dio dio = UserRepository.dio;
 
-      final String url = '/task';
+      const String url = '/task';
 
       final data = {
         "title": event.title,
@@ -139,7 +141,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
 
       print(DateTime.now().toUtc());
 
-      final token = await FlutterSecureStorage().read(key: 'accessToken');
+      final token = await const FlutterSecureStorage().read(key: 'accessToken');
 
       final response = await dio.post(url, data: data);
 
@@ -201,9 +203,9 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
     if (state is TaskLoaded) {
       final currentState = state as TaskLoaded;
 
-      currentState.currentTask!.subTaskList.forEach(
-        (element) => Logger().v(element.title),
-      );
+      for (var element in currentState.currentTask!.subTaskList) {
+        Logger().v(element.title);
+      }
       final gTask = currentState.gTasks.firstWhere(
         (element) => element.taskList
             .any((element) => element.id == currentState.currentTask!.id),
@@ -333,8 +335,88 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
       );
       emit(currentState.copyWith(
           tasksDisplay: (response.data['data'] as List)
-              .map((e) => Task.fromJson(e))
+              .map((e) => MyTask.fromJson(e))
               .toList()));
+    }
+  }
+
+  FutureOr<void> _onUpdateGTask(
+      TaskUpdateGTaskEvent event, Emitter<TaskState> emit) async {
+    if (state is TaskLoaded) {
+      final currentState = state as TaskLoaded;
+
+      final Dio dio = UserRepository.dio;
+
+      await dio.put('/gtask/${event.gTask.id}', data: {"name": event.name});
+
+      //load all gtasks
+      final response = await dio.get(
+        '/gtask',
+      );
+
+      // print(response.data['data']);
+      List<GTask> gTasks = (response.data['data'] as List)
+          .map((e) => GTask.fromJson(e))
+          .toList();
+      emit(currentState.copyWith(gTasks: gTasks, gTaskSelected: event.name));
+    }
+  }
+
+  FutureOr<void> _onDeleteTaskCompleted(
+      TaskDeleteAllCompletedTaskEvent event, Emitter<TaskState> emit) async {
+    if (state is TaskLoaded) {
+      final currentState = state as TaskLoaded;
+      int id = 0;
+      if (event.gTask.name == 'Today') {
+        var gTask = currentState.gTasks
+            .firstWhere((element) => element.name == 'Today'); 
+        id = gTask.id;   
+        for (var item in gTask.taskList) {
+          if (item.isCompleted) {
+            await deleteTask(item.id);
+          }
+        }
+      } else if (event.gTask.name == 'Favorite') {
+        id = -1;
+      } else {
+        var gTask = currentState.gTasks
+            .firstWhere((element) => element.id == event.gTask.id); 
+        id = gTask.id;   
+        for (var item in gTask.taskList) {
+          if (item.isCompleted) {
+            await deleteTask(item.id);
+          }
+        }
+      }
+
+      Dio dio = UserRepository.dio;
+      final response = await dio.get(
+        '/gtask',
+      );
+      List<GTask> gTasks = (response.data['data'] as List)
+          .map((e) => GTask.fromJson(e))
+          .toList();
+      
+      emit(currentState.copyWith(gTasks: gTasks));
+      add(TaskChangeGTaskListEvent(gTaskId: id));
+    }
+  }
+
+  Future<void> deleteTask(int id) async {
+    final Dio dio = UserRepository.dio;
+    await dio.delete('/task/$id');
+  }
+
+  FutureOr<void> _onDeleteTaskGroup(TaskDeleteGroupTask event, Emitter<TaskState> emit) async {
+    if (state is TaskLoaded) {
+      var currentState = state as TaskLoaded;
+      Dio dio = UserRepository.dio;
+      final response = await dio.delete(
+        '/gtask/${event.gTask.id}',
+      );
+
+       emit(currentState.copyWith(gTaskSelected: 'Today'));
+      add(TaskLoadEvent());
     }
   }
 }

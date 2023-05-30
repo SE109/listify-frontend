@@ -11,7 +11,7 @@ class SubtasksItem extends StatelessWidget {
     Key? key,
     required this.task,
   }) : super(key: key);
-  final Task task;
+  final MyTask task;
 
   @override
   Widget build(BuildContext context) {
