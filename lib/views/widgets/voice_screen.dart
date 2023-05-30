@@ -174,7 +174,7 @@ class _VoiceScreenState extends State<VoiceScreen> {
             left: 0,
             right: 0,
             top: 0,
-            child: SingleChildScrollView(child: test())),
+            child: SingleChildScrollView(child: recordBody())),
         Positioned(
           child: recordAction(),
           bottom: 0,
@@ -185,7 +185,7 @@ class _VoiceScreenState extends State<VoiceScreen> {
     );
   }
 
-  test() {
+  recordBody() {
     return BlocBuilder<VoiceBloc, VoiceState>(
       builder: (context, state) {
         if (state is VoiceLoaded) {
@@ -209,7 +209,7 @@ class _VoiceScreenState extends State<VoiceScreen> {
                         body: createPlayer(e));
                   }).toList(),
                 )
-              : const Text('Trống');
+              : emptyWidget();
         } else {
           return Container();
         }
@@ -354,6 +354,18 @@ class _VoiceScreenState extends State<VoiceScreen> {
           );
         });
       },
+    );
+  }
+  
+  emptyWidget() {
+    return Center(
+      child: Column(
+
+        children:  [
+        SizedBox(height: MediaQuery.of(context).size.height * 0.2,),
+        const Icon(Icons.mic_off_sharp , size: 100,),
+        const Text('No records found')
+      ]),
     );
   }
 }

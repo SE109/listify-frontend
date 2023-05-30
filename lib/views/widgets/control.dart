@@ -1,7 +1,10 @@
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:just_audio/just_audio.dart';
+
+import '../../blocs/appState/appState_cubit.dart';
 
 class Controls extends StatelessWidget {
   const Controls({super.key, required this.audioPlayer, required this.url});
@@ -9,6 +12,7 @@ class Controls extends StatelessWidget {
   final String url;
   @override
   Widget build(BuildContext context) {
+    final themeCubit = BlocProvider.of<AppStateCubit>(context, listen: false);
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -19,13 +23,13 @@ class Controls extends StatelessWidget {
           onPressed: onUndo,
           icon: SvgPicture.asset(
             'assets/icons/undo.svg',
-            color: Colors.black,
+            color: themeCubit.theme == 'light' ? Colors.black : Colors.white,
             height: 25,
           ),
         ),
         CircleAvatar(
           radius: 30,
-          backgroundColor: Colors.black,
+          backgroundColor: themeCubit.theme == 'light' ? Colors.black : Colors.white,
           child: StreamBuilder<PlayerState>(
               stream: audioPlayer.playerStateStream,
               builder: (context, snapshot) {
@@ -37,14 +41,18 @@ class Controls extends StatelessWidget {
                   return IconButton(
                       onPressed: audioPlayer.play,
                       iconSize: 40,
-                      color: Colors.white,
+                      color: themeCubit.theme == 'light'
+                          ? Colors.white
+                          : Colors.black,
                       icon: const Icon(Icons.play_arrow_rounded));
                 } else if (processingState != ProcessingState.completed) {
                   print(processingState);
                   return IconButton(
                       onPressed: audioPlayer.pause,
                       iconSize: 40,
-                      color: Colors.white,
+                        color: themeCubit.theme == 'light'
+                          ? Colors.white
+                          : Colors.black,
                       icon: const Icon(Icons.pause_rounded));
                       
                 }
@@ -54,7 +62,9 @@ class Controls extends StatelessWidget {
                       audioPlayer.play();
                     },
                     iconSize: 40,
-                    color: Colors.white,
+                      color: themeCubit.theme == 'light'
+                        ? Colors.white
+                        : Colors.black,
                     icon: const Icon(Icons.play_arrow_rounded));
               }),
         ),
@@ -62,7 +72,7 @@ class Controls extends StatelessWidget {
           onPressed: onRedo,
           icon: SvgPicture.asset(
             'assets/icons/redo.svg',
-            color: Colors.black,
+            color: themeCubit.theme == 'light' ? Colors.black : Colors.white,
             height: 25,
           ),
         ),
