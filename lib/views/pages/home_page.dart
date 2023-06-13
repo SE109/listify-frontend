@@ -32,7 +32,9 @@ class HomePage extends StatelessWidget {
             title: BlocBuilder<TaskBloc, TaskState>(
               builder: (context, state) {
                 if (state is TaskLoaded) {
-                  return Text(state.gTaskSelected);
+                  return Text(state.gTaskSelected == 'Today'
+                      ? 'General'
+                      : state.gTaskSelected);
                 } else {
                   return const Text('Listify');
                 }
@@ -46,14 +48,12 @@ class HomePage extends StatelessWidget {
             actions: [
               BlocBuilder<TaskBloc, TaskState>(
                 builder: (context, state) {
-                 
-                  if(state is TaskLoaded) {
+                  if (state is TaskLoaded) {
                     return IconButton(
                       onPressed: () => _showMoreBottomSheet(context),
                       icon: const Icon(Icons.more_horiz_rounded),
                     );
-                  }
-                  else {
+                  } else {
                     return IconButton(
                       onPressed: () {},
                       icon: const Icon(Icons.more_horiz_rounded),

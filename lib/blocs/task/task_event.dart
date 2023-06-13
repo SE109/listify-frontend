@@ -50,7 +50,7 @@ class TaskChangeCurrentEvent extends TaskEvent {
 class TaskSaveChangeTaskEvent extends TaskEvent {
   final String title;
   final String detail;
-  final DateTime toDate;
+  final DateTime? toDate;
 
   const TaskSaveChangeTaskEvent(
       {required this.title, required this.detail, required this.toDate});

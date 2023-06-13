@@ -43,18 +43,25 @@ class _TaskContentScreenState extends State<TaskContentScreen> {
       backgroundColor: Theme.of(context).colorScheme.background,
       appBar: AppBar(
         actions: [
-           IconButton(
-            onPressed: ()  {
-              Navigator.of(context).push(MaterialPageRoute(builder: (context) => VoiceScreen(task: widget.task)));
+          IconButton(
+            onPressed: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => VoiceScreen(task: widget.task)));
             },
             icon: const Icon(Icons.keyboard_voice_outlined),
           ),
           BlocBuilder<TaskBloc, TaskState>(
             builder: (context, state) {
               if (state is TaskLoaded) {
-                final task = state.tasksDisplay.firstWhere(
-                  (element) => element.id == widget.task.id,
-                );
+                var task;
+                try {
+                  task = state.tasksDisplay.firstWhere(
+                    (element) => element.id == widget.task.id,
+                  );
+                } catch (e) {}
+                if (task == null) {
+                  return const Icon(Icons.star_rounded);
+                }
                 return IconButton(
                   onPressed: () {
                     BlocProvider.of<TaskBloc>(context)
@@ -73,15 +80,15 @@ class _TaskContentScreenState extends State<TaskContentScreen> {
           ),
           IconButton(
             onPressed: () async {
-              Navigator.pop(context);
               await Future.delayed(
                   const Duration(milliseconds: 300),
                   () => BlocProvider.of<TaskBloc>(context)
                       .add(TaskDeleteEvent()));
+              await Future.delayed(Duration(milliseconds: 500));
+              Navigator.pop(context);
             },
             icon: const Icon(Icons.delete_rounded),
           ),
-         
         ],
       ),
       floatingActionButton: FloatingActionButton.extended(
@@ -90,19 +97,19 @@ class _TaskContentScreenState extends State<TaskContentScreen> {
                 BlocProvider.of<TaskBloc>(context).add(TaskSaveChangeTaskEvent(
                     detail: detailEditController.text,
                     title: titleEditController.text,
-                    toDate: DateTime.now()));
+                    toDate: null));
                 Navigator.pop(context);
               }
             : () {
                 BlocProvider.of<TaskBloc>(context).add(TaskSaveChangeTaskEvent(
                     detail: detailEditController.text,
                     title: titleEditController.text,
-                    toDate: DateTime.now()));
+                    toDate: null));
                 Navigator.pop(context);
               },
         label: widget.task.isCompleted
-            ? const Text('Mark uncompleted')
-            : const Text('Mark completed'),
+            ? const Text('Save')
+            : const Text('Save'),
       ),
       body: SingleChildScrollView(
         child: Padding(

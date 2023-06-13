@@ -1,5 +1,7 @@
+import 'dart:collection';
 import 'dart:ui';
 
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -8,7 +10,7 @@ import '../../models/task.dart';
 import 'list_item.dart';
 import 'section_header.dart';
 
-class ProgressSection extends StatelessWidget {
+class ProgressSection extends StatefulWidget {
   const ProgressSection({
     Key? key,
     required this.tasks,
@@ -17,9 +19,26 @@ class ProgressSection extends StatelessWidget {
   final List<MyTask> tasks;
 
   @override
-  Widget build(BuildContext context) {
-    final List<DateTime> dates = [];
+  State<ProgressSection> createState() => _ProgressSectionState();
+}
 
+class _ProgressSectionState extends State<ProgressSection> {
+  final List<DateTime> dates = [];
+
+  @override
+  void initState() {
+    // var groupByDate = groupBy(widget.tasks,
+    //     (obj) => obj.fromDate.toUtc().toString().substring(0, 10));
+    // print('-----------group ne');
+    // widget.tasks.forEach(
+    //   (element) => print(element.fromDate.toUtc()),
+    // );
+
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     // if (tasks.isEmpty) return Container();
 
     // for (final task in tasks) {
@@ -33,6 +52,25 @@ class ProgressSection extends StatelessWidget {
         if (state is TaskLoading) {
           return const SizedBox();
         } else if (state is TaskLoaded) {
+          print('-----------group ne');
+
+          var groupByDate = groupBy(state.tasksDisplay,
+              (obj) => obj.toDate.toUtc().toString().substring(0, 10));
+          List<String> dates = [];
+          groupByDate = LinkedHashMap.fromEntries(groupByDate.entries.toList().reversed);
+          groupByDate.forEach((date, list) {
+            // Header
+            dates.add(date);
+            print('${date}:');
+
+            // Group
+            list.forEach((listItem) {
+              // List item
+              print('${listItem.fromDate}, ${listItem.fromDate}');
+            });
+            // day section divider
+            print('\naaa');
+          });
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -41,9 +79,10 @@ class ProgressSection extends StatelessWidget {
                 padding: EdgeInsets.zero,
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
-                itemCount: 1,
+                itemCount: groupByDate.length,
                 itemBuilder: (context, index) => DateCategorizedTasks(
-                  tasks: state.tasksDisplay,
+                  date: dates[index],
+                  tasks: groupByDate[dates[index]]!,
                   // date: dates[index],
                 ),
               ),
@@ -60,11 +99,11 @@ class ProgressSection extends StatelessWidget {
 class DateCategorizedTasks extends StatelessWidget {
   const DateCategorizedTasks({
     super.key,
-    // required this.date,
+    required this.date,
     required this.tasks,
   });
 
-  // final DateTime date;
+  final String date;
   final List<MyTask> tasks;
   @override
   Widget build(BuildContext context) {
@@ -83,7 +122,10 @@ class DateCategorizedTasks extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // SectionHeader(title: label.isEmpty ? formatDate(date) : label),
+        SectionHeader(
+            title: date == DateTime.now().toUtc().toString().substring(0, 10)
+                ? 'Today'
+                : date),
         ListView.builder(
           padding: EdgeInsets.zero,
           shrinkWrap: true,

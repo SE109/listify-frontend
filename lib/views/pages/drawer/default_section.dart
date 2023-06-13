@@ -23,7 +23,7 @@ class DefaultSection extends StatelessWidget {
             children: [
               ListItem(
                 id: today.id,
-                title: 'Today',
+                title: 'General',
                 icon: const Icon(Icons.light_mode_rounded),
                 badge: today.taskList.length,
               ),

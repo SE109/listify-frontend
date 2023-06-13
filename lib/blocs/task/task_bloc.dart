@@ -135,11 +135,11 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
       final data = {
         "title": event.title,
         "description": event.description,
-        "fromDate": DateTime.now().toUtc().toString(),
-        "toDate": event.toDate.toUtc().toString(),
+        "fromDate": (event.fromDate.add(Duration(seconds: 1))).toUtc().toLocal().toString(),
+        "toDate": (event.toDate.add(Duration(seconds: 1))).toUtc().toLocal().toString(),
       };
-
-      print(DateTime.now().toUtc());
+      print('-------date utc');
+      print(DateTime.now());
 
       final token = await const FlutterSecureStorage().read(key: 'accessToken');
 
@@ -231,11 +231,14 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
             data: {"taskId": currentState.currentTask!.id, "title": e.title});
       }
 
+      print('------save change date time');
+      print(currentState.currentTask!.fromDate.toUtc().toLocal());
+
       await dio.put('/task/${currentState.currentTask!.id}', data: {
         "title": event.title,
         "description": event.detail,
-        "fromDate": currentState.currentTask!.fromDate.toUtc().toString(),
-        "toDate": currentState.currentTask!.toDate.toUtc().toString(),
+        "fromDate": currentState.currentTask!.fromDate.toUtc().toLocal().toString(),
+        "toDate": currentState.currentTask!.toDate.toUtc().toLocal().toString(),
       });
 
       add(TaskReloadTaskEvent());
@@ -369,8 +372,8 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
       int id = 0;
       if (event.gTask.name == 'Today') {
         var gTask = currentState.gTasks
-            .firstWhere((element) => element.name == 'Today'); 
-        id = gTask.id;   
+            .firstWhere((element) => element.name == 'Today');
+        id = gTask.id;
         for (var item in gTask.taskList) {
           if (item.isCompleted) {
             await deleteTask(item.id);
@@ -380,8 +383,8 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
         id = -1;
       } else {
         var gTask = currentState.gTasks
-            .firstWhere((element) => element.id == event.gTask.id); 
-        id = gTask.id;   
+            .firstWhere((element) => element.id == event.gTask.id);
+        id = gTask.id;
         for (var item in gTask.taskList) {
           if (item.isCompleted) {
             await deleteTask(item.id);
@@ -396,7 +399,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
       List<GTask> gTasks = (response.data['data'] as List)
           .map((e) => GTask.fromJson(e))
           .toList();
-      
+
       emit(currentState.copyWith(gTasks: gTasks));
       add(TaskChangeGTaskListEvent(gTaskId: id));
     }
@@ -407,7 +410,8 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
     await dio.delete('/task/$id');
   }
 
-  FutureOr<void> _onDeleteTaskGroup(TaskDeleteGroupTask event, Emitter<TaskState> emit) async {
+  FutureOr<void> _onDeleteTaskGroup(
+      TaskDeleteGroupTask event, Emitter<TaskState> emit) async {
     if (state is TaskLoaded) {
       var currentState = state as TaskLoaded;
       Dio dio = UserRepository.dio;
@@ -415,7 +419,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
         '/gtask/${event.gTask.id}',
       );
 
-       emit(currentState.copyWith(gTaskSelected: 'Today'));
+      emit(currentState.copyWith(gTaskSelected: 'Today'));
       add(TaskLoadEvent());
     }
   }

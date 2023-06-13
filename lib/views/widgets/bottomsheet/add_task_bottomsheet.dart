@@ -135,6 +135,7 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
                     isSelected: currentDate != null,
                     onPressed: () async {
                       final time = await _showDatePicker(context);
+                      print(time);
                       _setCurrentDate(time);
                     },
                     padding: EdgeInsets.zero,
@@ -156,20 +157,13 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
                   onPressed: _titleController.text.isNotEmpty ||
                           _detailsController.text.isNotEmpty
                       ? () {
-                          // Task task = Task(
-                          //     id: id,
-                          //     title: title,
-                          //     description: description,
-                          //     fromDate: fromDate,
-                          //     toDate: toDate,
-                          //     isCompleted: isCompleted,
-                          //     isFavorited: isFavorited);
                           print('object');
                           BlocProvider.of<TaskBloc>(context).add(TaskAddEvent(
                               title: _titleController.text,
                               description: _detailsController.text,
-                              fromDate: DateTime.now(),
+                              fromDate: currentDate ?? DateTime.now(),
                               toDate: currentDate ?? DateTime.now()));
+                          Navigator.pop(context);
                         }
                       : null,
                   child: const Text('Save'),

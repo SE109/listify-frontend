@@ -33,12 +33,18 @@ class _ListSelectorState extends State<ListSelector> {
           return const SizedBox();
         }
         if (state is TaskLoaded) {
-          final gTask = state.gTasks
-              .where(
-                (element) => element.taskList
-                    .any((element) => element.id == widget.task.id),
-              )
-              .first;
+          var gTask;
+          try {
+            gTask = state.gTasks.firstWhere(
+              (element) => element.taskList
+                  .any((element) => element.id == widget.task.id),
+            );
+          } catch (err) {}
+
+          if (gTask == null) {
+            return const SizedBox();
+          }
+
           final List<String> list = state.gTasks
               .map(
                 (e) => e.name,
