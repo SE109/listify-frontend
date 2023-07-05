@@ -15,10 +15,4 @@ To get started with this Flutter application, follow the steps below:
 2. Clone this repository:
 ```bash
    git clone <repository_url>
-```bash
-   cd <repository_directory>
-```bash
-   flutter pub get
-```bash
-   flutter run
 
