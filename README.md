@@ -18,15 +18,16 @@ To get started with this Flutter application, follow the steps below:
 ```
 
 2. Run app:
--Navigate to the cloned repository:
+
+- Navigate to the cloned repository:
 ```bash
    cd <repository_directory>
 ```
--Install the dependencies:
+- Install the dependencies:
 ```bash
    flutter pub get
 ```
--Run the application:
+- Run the application:
 ```bash
    flutter run
 ```
