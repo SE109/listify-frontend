@@ -1,10 +1,10 @@
 # Listify
 
-This repository contains the source code for "My Flutter App", an application built using the Flutter framework.
+This repository contains the source code for "Listify", an application built using the Flutter framework.
 
 ## Previous Git Repository
 
-The previous Git repository, referred to as "OldGitRepo", can be found at the following location: [OldGitRepo](https://github.com/username/OldGitRepo). Please note that this repository is no longer actively maintained or supported.
+The previous Git repository, referred to as "OldGitRepo", can be found at the following location: [OldGitRepo]([https://github.com/username/OldGitRepo](https://github.com/hanhkiet/done.git)). Please note that this repository is no longer actively maintained or supported.
 
 ## Getting Started
 
@@ -18,12 +18,15 @@ To get started with this Flutter application, follow the steps below:
 ```
 
 2. Run app:
+-Navigate to the cloned repository:
 ```bash
    cd <repository_directory>
 ```
+-Install the dependencies:
 ```bash
    flutter pub get
 ```
+-Run the application:
 ```bash
    flutter run
 ```
