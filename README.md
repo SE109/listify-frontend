@@ -14,14 +14,14 @@ To get started with this Flutter application, follow the steps below:
 
 2. Clone this repository:
 ```bash
-   git clone <repository_url>
+   git clone https://github.com/SE109/listify-frontend.git
 ```
 
 3. Run app:
 
 - Navigate to the cloned repository:
 ```bash
-   cd <repository_directory>
+   cd listify
 ```
 - Install the dependencies:
 ```bash
