@@ -162,6 +162,7 @@ static void setupInterceptors(String accessToken) {
       "firstName": firstName,
       "phoneNum": phone
     };
+    print(body);
     Response response = await dio.post(AppConfig.registerUrl, data: body);
     return response;
   }

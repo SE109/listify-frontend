@@ -81,7 +81,7 @@ class _ListSelectorState extends State<ListSelector> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Text(state.currentGTask!),
+                        Text(state.currentGTask! == 'Today' ? 'General' : state.currentGTask!),
                         const Icon(Icons.arrow_drop_down_rounded),
                       ],
                     );
@@ -146,7 +146,7 @@ class ListSelectionBottomSheet extends StatelessWidget {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(list[index]),
+                          Text(list[index] == 'Today' ? 'General' : list[index]),
                           state.currentGTask == list[index]
                               ? const Icon(Icons.check_rounded)
                               : Container()

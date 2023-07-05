@@ -24,8 +24,8 @@ class _DateItemState extends State<DateItem> {
     return showDatePicker(
       context: context,
       initialEntryMode: DatePickerEntryMode.calendarOnly,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(1970),
+      initialDate: date == null ? DateTime.now() : date!,
+      firstDate: DateTime.now().subtract(Duration(days: 0)),
       lastDate: DateTime(3000),
     );
   }
@@ -45,7 +45,29 @@ class _DateItemState extends State<DateItem> {
       ),
       child: Row(
         children: [
-          const Icon(Icons.today_rounded),
+          BlocBuilder<TaskBloc, TaskState>(
+            builder: (context, state) {
+              if (state is TaskLoaded) {
+                return InkWell(
+                    onTap: () async {
+                      var date1 = await _showDatePicker(context);
+
+                      if (date1 == null) {
+                        return;
+                      }
+
+                      date = date1;
+
+                      setState(() {});
+                      state.currentTask =
+                          state.currentTask!.copyWith(toDate: date1);
+                    },
+                    child: const Icon(Icons.today_rounded));
+              } else {
+                return Container();
+              }
+            },
+          ),
           const SizedBox(width: 16),
           date != null
               ? InputChip(
@@ -67,9 +89,15 @@ class _DateItemState extends State<DateItem> {
                         padding: const EdgeInsets.symmetric(vertical: 12),
                         child: GestureDetector(
                           onTap: () async {
-                            date = await _showDatePicker(context);
+                            var date1 = await _showDatePicker(context);
+                            if (date1 == null) {
+                              return;
+                            }
+
+                            date = date1;
                             setState(() {});
-                            state.currentTask = state.currentTask!.copyWith(toDate: date);
+                            state.currentTask =
+                                state.currentTask!.copyWith(toDate: date1);
                           },
                           child: Text(
                             'Add date',

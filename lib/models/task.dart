@@ -1,6 +1,7 @@
+import 'package:equatable/equatable.dart';
 import 'package:listify/models/voice.dart';
 
-class MyTask {
+class MyTask extends Equatable {
   final int id;
   final String title;
   final String description;
@@ -75,6 +76,19 @@ class MyTask {
         "subTaskList": List<SubTask>.from(subTaskList.map((x) => x.toJson())),
         "voiceList": List<Voice>.from(voiceList.map((x) => x.toJson())),
       };
+
+  @override
+  List<Object?> get props => [
+        id,
+        title,
+        description,
+        fromDate,
+        toDate,
+        isCompleted,
+        isFavorited,
+        subTaskList,
+        voiceList,
+      ];
 }
 
 class SubTask {

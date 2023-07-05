@@ -65,8 +65,8 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
     print(todayTasks);
 
     if (state is TaskLoaded) {
+      print('load again');
       final currentState = state as TaskLoaded;
-
       emit(currentState.copyWith(gTasks: gTasks, tasksDisplay: todayTasks));
     } else {
       emit(TaskLoaded(
@@ -96,6 +96,8 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
       List<GTask> gTasks = (response.data['data'] as List)
           .map((e) => GTask.fromJson(e))
           .toList();
+
+      // await Future.delayed(Duration(milliseconds: 100));
 
       print('ngyu');
       // print(gTasks[0].taskList[0].description);
@@ -135,8 +137,14 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
       final data = {
         "title": event.title,
         "description": event.description,
-        "fromDate": (event.fromDate.add(Duration(seconds: 1))).toUtc().toLocal().toString(),
-        "toDate": (event.toDate.add(Duration(seconds: 1))).toUtc().toLocal().toString(),
+        "fromDate": (event.fromDate.add(Duration(seconds: 1)))
+            .toUtc()
+            .toLocal()
+            .toString(),
+        "toDate": (event.toDate.add(Duration(seconds: 1)))
+            .toUtc()
+            .toLocal()
+            .toString(),
       };
       print('-------date utc');
       print(DateTime.now());
@@ -147,7 +155,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
 
       print(response.data['data']['id']);
 
-      dio.put('/task/${response.data['data']['id']}/move', data: {
+      await dio.put('/task/${response.data['data']['id']}/move', data: {
         "groupTaskId": currentState.gTasks
             .where(
               (element) => element.name == 'Today',
@@ -155,7 +163,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
             .first
             .id
       });
-      add(TaskLoadEvent());
+      add(TaskReloadTaskEvent());
     }
   }
 
@@ -236,8 +244,9 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
 
       await dio.put('/task/${currentState.currentTask!.id}', data: {
         "title": event.title,
-        "description": event.detail,
-        "fromDate": currentState.currentTask!.fromDate.toUtc().toLocal().toString(),
+        "description": event.detail.trim(),
+        "fromDate":
+            currentState.currentTask!.fromDate.toUtc().toLocal().toString(),
         "toDate": currentState.currentTask!.toDate.toUtc().toLocal().toString(),
       });
 
@@ -281,7 +290,11 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
       emit(currentState.copyWith(
           currentTask: null, refresh: currentState.refresh + 1));
 
-      add(TaskReloadTaskEvent());
+      if (currentState.gTaskSelected == 'Favorite') {
+        add(TaskLoadAllFavoriteEvent());
+      } else {
+        add(TaskLoadEvent());
+      }
     }
   }
 
@@ -336,10 +349,12 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
       final response = await dio.get(
         '/task/fav',
       );
+      add(TaskLoadEvent());
       emit(currentState.copyWith(
           tasksDisplay: (response.data['data'] as List)
               .map((e) => MyTask.fromJson(e))
               .toList()));
+      
     }
   }
 

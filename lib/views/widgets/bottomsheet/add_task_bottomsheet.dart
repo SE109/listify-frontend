@@ -68,7 +68,7 @@ class _AddTaskBottomSheetState extends State<AddTaskBottomSheet> {
       context: context,
       initialEntryMode: DatePickerEntryMode.calendarOnly,
       initialDate: DateTime.now(),
-      firstDate: DateTime(1970),
+      firstDate: DateTime.now().subtract(Duration(days: 0)),
       lastDate: DateTime(3000),
     );
   }

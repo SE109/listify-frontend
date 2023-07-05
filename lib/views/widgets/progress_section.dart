@@ -54,22 +54,28 @@ class _ProgressSectionState extends State<ProgressSection> {
         } else if (state is TaskLoaded) {
           print('-----------group ne');
 
-          var groupByDate = groupBy(state.tasksDisplay,
+          List<MyTask> taskDisplay = state.tasksDisplay
+            ..sort((a, b) => b.fromDate.compareTo(a.fromDate));
+
+          print(taskDisplay);
+
+          var groupByDate = groupBy(taskDisplay,
               (obj) => obj.toDate.toUtc().toString().substring(0, 10));
           List<String> dates = [];
-          groupByDate = LinkedHashMap.fromEntries(groupByDate.entries.toList().reversed);
+          groupByDate =
+              LinkedHashMap.fromEntries(groupByDate.entries.toList().reversed);
           groupByDate.forEach((date, list) {
             // Header
             dates.add(date);
-            print('${date}:');
+            // print('${date}:');
 
-            // Group
-            list.forEach((listItem) {
-              // List item
-              print('${listItem.fromDate}, ${listItem.fromDate}');
-            });
-            // day section divider
-            print('\naaa');
+            // // Group
+            // list.forEach((listItem) {
+            //   // List item
+            //   print('${listItem.fromDate}, ${listItem.fromDate}');
+            // });
+            // // day section divider
+            // print('\naaa');
           });
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -107,18 +113,6 @@ class DateCategorizedTasks extends StatelessWidget {
   final List<MyTask> tasks;
   @override
   Widget build(BuildContext context) {
-    // final list = tasks
-    //     .where((element) =>
-    //         !element.completed &&
-    //         element.time != null &&
-    //         element.time!.compareTo(date) == 0)
-    //     .toList();
-
-    // if (list.isEmpty) return Container();
-
-    // String label =
-    //     getLabelFromDuration(calculateDifference(date, DateTime.now()));
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

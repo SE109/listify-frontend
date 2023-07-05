@@ -62,24 +62,24 @@ class HomePage extends StatelessWidget {
                 },
               )
             ],
-            bottom: PreferredSize(
-              preferredSize: const Size.fromHeight(75),
-              child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 8,
-                  ),
-                  child: Container()
+            // bottom: PreferredSize(
+            //   preferredSize: const Size.fromHeight(75),
+            //   child: Padding(
+            //       padding: const EdgeInsets.symmetric(
+            //         horizontal: 16,
+            //         vertical: 8,
+            //       ),
+            //       child: Container()
 
-                  // GestureDetector(
-                  //   onTap: () => showSearch(
-                  //     context: context,
-                  //     delegate: TaskSearchDelegate(),
-                  //   ),
-                  //   child: const SearchBar(),
-                  // ),
-                  ),
-            ),
+            //       // GestureDetector(
+            //       //   onTap: () => showSearch(
+            //       //     context: context,
+            //       //     delegate: TaskSearchDelegate(),
+            //       //   ),
+            //       //   child: const SearchBar(),
+            //       // ),
+            //       ),
+            // ),
           ),
           // if (currentListId == 'today')
           const TodayListBody()

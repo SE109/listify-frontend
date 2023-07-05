@@ -16,22 +16,9 @@ class ListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Dismissible(
-      key: const ValueKey('string'),
-      direction: DismissDirection.startToEnd,
-      background: Container(
-        padding: const EdgeInsets.only(left: 12),
-        color: Theme.of(context).colorScheme.errorContainer,
-        alignment: Alignment.centerLeft,
-        child: Icon(
-          Icons.cancel_outlined,
-          color: Theme.of(context).colorScheme.onErrorContainer,
-        ),
-      ),
-      child: task.description == null || task.description.isEmpty
-          ? OneLineListTile(task: task)
-          : TwoLineListTile(task: task),
-    );
+    return task.description == null || task.description.isEmpty
+        ? OneLineListTile(task: task)
+        : TwoLineListTile(task: task);
   }
 }
 
