@@ -15,9 +15,6 @@ To get started with this Flutter application, follow the steps below:
 2. Clone this repository:
 ```bash
    git clone <repository_url>
-
-
-3. Run app:
 ```bash
    cd <repository_directory>
 ```bash
