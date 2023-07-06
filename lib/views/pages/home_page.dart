@@ -9,8 +9,19 @@ import '../widgets/bottomsheet/more_bottom_sheet.dart';
 import 'drawer/app_drawer.dart';
 import 'today_list.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  @override
+  void initState() {
+    BlocProvider.of<TaskBloc>(context).add(TaskLoadEvent());
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {

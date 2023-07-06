@@ -25,11 +25,11 @@ Future<void> main() async {
     MultiBlocProvider(
         providers: [
           BlocProvider(
-            create: (context) => TaskBloc()..add(TaskLoadEvent()),
+            create: (context) => TaskBloc(),
           ),
           BlocProvider(
               create: (context) => AuthBloc(userRepository)..add(AppStarted())),
-          BlocProvider(create: (context) => UserBloc()..add(const GetInfo())),
+          BlocProvider(create: (context) => UserBloc()),
           BlocProvider(
             create: (context) => LoginBloc(
                 authBloc: BlocProvider.of<AuthBloc>(context),
