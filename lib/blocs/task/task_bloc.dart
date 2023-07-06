@@ -67,7 +67,29 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
     if (state is TaskLoaded) {
       print('load again');
       final currentState = state as TaskLoaded;
-      emit(currentState.copyWith(gTasks: gTasks, tasksDisplay: todayTasks));
+
+      if (currentState.gTaskSelected == 'Favorite') {
+        final response = await dio.get(
+          '/task/fav',
+        );
+        emit(
+          currentState.copyWith(
+              gTasks: gTasks,
+              tasksDisplay: (response.data['data'] as List)
+                  .map((e) => MyTask.fromJson(e))
+                  .toList(),
+              currentGTask: currentState.currentGTask,
+              gTaskSelected: currentState.gTaskSelected),
+        );
+      } else {
+        emit(
+          currentState.copyWith(
+              gTasks: gTasks,
+              tasksDisplay: todayTasks,
+              currentGTask: currentState.currentGTask,
+              gTaskSelected: currentState.gTaskSelected),
+        );
+      }
     } else {
       emit(TaskLoaded(
           gTasks: gTasks,
@@ -182,7 +204,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
     await dio.put(
       '/task/${event.task.id}/toggle-favo',
     );
-    add(TaskReloadTaskEvent());
+    add(TaskLoadEvent());
   }
 
   FutureOr<void> _onChangeCurrent(
@@ -289,12 +311,12 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
 
       emit(currentState.copyWith(
           currentTask: null, refresh: currentState.refresh + 1));
+      add(TaskLoadEvent());
+      // if (currentState.gTaskSelected == 'Favorite') {
+      //   add(TaskLoadAllFavoriteEvent());
+      // } else {
 
-      if (currentState.gTaskSelected == 'Favorite') {
-        add(TaskLoadAllFavoriteEvent());
-      } else {
-        add(TaskLoadEvent());
-      }
+      // }
     }
   }
 
@@ -345,16 +367,14 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
       final currentState = state as TaskLoaded;
 
       Dio dio = UserRepository.dio;
-
+      // add(TaskReloadTaskEvent());
       final response = await dio.get(
         '/task/fav',
       );
-      add(TaskLoadEvent());
       emit(currentState.copyWith(
           tasksDisplay: (response.data['data'] as List)
               .map((e) => MyTask.fromJson(e))
               .toList()));
-      
     }
   }
 
