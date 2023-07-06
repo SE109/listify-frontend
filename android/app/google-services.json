@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "715958365190",
+    "project_id": "listify-c8215",
+    "storage_bucket": "listify-c8215.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:715958365190:android:8377fba86af398d1006787",
+        "android_client_info": {
+          "package_name": "com.example.listify"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "715958365190-jad1css978e9fvu26uqqv4ke544p703e.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAy08zJVzyAqZk3H7NBBN85-CYDXVtXUdM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "715958365190-jad1css978e9fvu26uqqv4ke544p703e.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

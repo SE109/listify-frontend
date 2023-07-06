@@ -1,4 +1,11 @@
 class AppConfig {
-  // API Example
-  static const String sample = "https://api.example.com";
+  static const String mainUrl = "http://10.0.2.2:5000";
+  static const String loginUrl = '$mainUrl/auth/login';
+  static const String registerUrl = '$mainUrl/auth/register';
+  static const String logoutUrl = '/auth/logout';
+  static const String changePasswordUrl = '/user/change-password';
+  static const String updateInfoUrl = '/user/update-info';
+  static const String updateAvatarUrl = '/user/update-avatar';
+  static const String getInfoUrl = '/user/get-info';
+  static const String refreshTokenUrl  = '/auth/refresh-token';
 }
