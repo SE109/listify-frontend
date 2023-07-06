@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:listify/views/pages/home_page.dart';
-import 'package:listify/views/pages/settings/setting_screen.dart';
+import 'package:listify/views/pages/user_profile/profile_page.dart';
 
 import '../pages/drawer/app_drawer.dart';
 
@@ -21,7 +21,7 @@ class _NavigatingPointState extends State<NavigatingPoint> {
 
   final screens = [
     const HomePage(),
-    const SettingScreen(),
+    const ProfilePage(),
   ];
 
   _changeIndex(index) => setState(() {

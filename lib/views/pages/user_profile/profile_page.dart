@@ -6,8 +6,7 @@ import 'package:listify/constants/app_constants.dart';
 
 import '../../../blocs/user/user_bloc.dart';
 import '../../../routes/app_routes.dart';
-
-
+import '../settings/theme_screen.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
@@ -18,7 +17,7 @@ class ProfilePage extends StatelessWidget {
       body: BlocBuilder<UserBloc, UserState>(
         builder: (context, state) {
           if (state is UserLoading) {
-            return Center(
+            return const Center(
               child: CircularProgressIndicator(),
             );
           } else if (state is UserLoaded) {
@@ -41,20 +40,20 @@ class ProfilePage extends StatelessWidget {
                       },
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 10,
                   ),
                   Text(
-                    state.user.firstName + " " + state.user.lastName,
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+                    "${state.user.firstName} ${state.user.lastName}",
+                    style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 4,
                   ),
                   Text(state.user.phoneNum,
-                      style: TextStyle(
-                          fontSize: 16, color: Colors.black.withOpacity(0.6))),
-                  SizedBox(
+                      style: const TextStyle(
+                          fontSize: 16, )),
+                  const SizedBox(
                     height: 50,
                   ),
                   ItemProfile(
@@ -63,12 +62,17 @@ class ProfilePage extends StatelessWidget {
                       onPress: () {
                         Navigator.pushNamed(context, AppRoutes.changePassWord);
                       }),
-                  CustomDivider(),
+                  const CustomDivider(),
                   ItemProfile(
                       leftIcon: Icons.edit,
                       label: "Theme Setting",
-                      onPress: () {}),
-                  CustomDivider(),
+                      onPress: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => ThemeScreen()));
+                      }),
+                  const CustomDivider(),
                   BlocBuilder<LoginBloc, LoginState>(
                     builder: (context, state) {
                       return ItemProfile(
@@ -76,7 +80,7 @@ class ProfilePage extends StatelessWidget {
                         label: "Log Out",
                         onPress: () {
                           BlocProvider.of<LoginBloc>(context)
-                              .add(ButtonLogoutPressed());
+                              .add(const ButtonLogoutPressed());
                         },
                         color: Colors.grey.withOpacity(0.8),
                       );
@@ -86,7 +90,7 @@ class ProfilePage extends StatelessWidget {
               ),
             );
           } else {
-            return Center(
+            return const Center(
               child: CircularProgressIndicator(),
             );
           }
@@ -101,8 +105,8 @@ class EditableCircleAvatar extends StatelessWidget {
   final double size;
   final VoidCallback onPressed;
 
-  EditableCircleAvatar(
-      {required this.imageUrl, required this.size, required this.onPressed});
+  const EditableCircleAvatar(
+      {super.key, required this.imageUrl, required this.size, required this.onPressed});
 
   @override
   Widget build(BuildContext context) {
@@ -110,7 +114,7 @@ class EditableCircleAvatar extends StatelessWidget {
       alignment: Alignment.bottomCenter,
       children: [
         Padding(
-          padding: EdgeInsets.all(20),
+          padding: const EdgeInsets.all(20),
           child: CircleAvatar(
             backgroundColor: Colors.transparent,
             backgroundImage: NetworkImage(imageUrl),
@@ -123,7 +127,7 @@ class EditableCircleAvatar extends StatelessWidget {
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(20), color: Colors.black),
           child: IconButton(
-            icon: Icon(
+            icon: const Icon(
               Icons.edit,
               color: Colors.white,
               size: 20,
@@ -162,16 +166,16 @@ class ItemProfile extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  Icon(leftIcon, size: 28, color: color ?? Colors.black),
+                  Icon(leftIcon, size: 28),
                   const SizedBox(
                     width: 16,
                   ),
                   Text(
                     label,
-                    style: TextStyle(
+                    style: const TextStyle(
                         fontWeight: FontWeight.w500,
                         fontSize: 16,
-                        color: color ?? Colors.black),
+                        ),
                   ),
                 ],
               ),

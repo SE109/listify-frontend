@@ -59,7 +59,7 @@ dependencies:
   flutter_svg: ^2.0.5
   flutter_sound: ^9.2.13
   permission_handler: ^10.2.0
-  collection: ^1.17.1
+  collection: ^1.17.0
 
 dev_dependencies:
   flutter_test:
