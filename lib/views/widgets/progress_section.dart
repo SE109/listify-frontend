@@ -82,7 +82,7 @@ class _ProgressSectionState extends State<ProgressSection> {
               SizedBox(
                 height: 250,
               ), 
-              Text('No tasks yet')
+              Text('No tasks yet') 
             ]);
           }
           return Column(
