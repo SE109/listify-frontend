@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:listify/blocs/auth/auth_bloc.dart';
 import 'package:listify/blocs/login/login_bloc.dart';
-import 'package:listify/constants/app_constants.dart';
 
 import '../../../blocs/user/user_bloc.dart';
 import '../../../routes/app_routes.dart';
@@ -33,73 +31,73 @@ class _ProfilePageState extends State<ProfilePage> {
             );
           } else if (state is UserLoaded) {
             return SafeArea(
-              child: Column(
-                children: [
-                  Align(
-                      alignment: Alignment.centerLeft,
-                      child: Image.asset(
-                        "assets/images/logo_3.png",
-                        scale: 3.5,
-                      )),
-                  Center(
-                    child: EditableCircleAvatar(
-                      imageUrl: state.user.avatar,
-                      size: 110,
-                      onPressed: () {
-                        Navigator.pushNamed(context, AppRoutes.updateProfile,
-                            arguments: state.user);
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    Align(
+                        alignment: Alignment.centerLeft,
+                        child: Image.asset(
+                          "assets/images/logo_3.png",
+                          scale: 3.5,
+                        )),
+                    Center(
+                      child: EditableCircleAvatar(
+                        imageUrl: state.user.avatar,
+                        size: 110,
+                        onPressed: () {
+                          Navigator.pushNamed(context, AppRoutes.updateProfile,
+                              arguments: state.user);
+                        },
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Text(
+                      "${state.user.firstName} ${state.user.lastName}",
+                      style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+                    ),
+                    const SizedBox(
+                      height: 4,
+                    ),
+                    Text(state.user.phoneNum,
+                        style: const TextStyle(
+                            fontSize: 16, )),
+                    const SizedBox(
+                      height: 50,
+                    ),
+                    ItemProfile(
+                        leftIcon: Icons.lock,
+                        label: "Change Password",
+                        onPress: () {
+                          Navigator.pushNamed(context, AppRoutes.changePassWord);
+                        }),
+                    const CustomDivider(),
+                    ItemProfile(
+                        leftIcon: Icons.edit,
+                        label: "Theme Setting",
+                        onPress: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => ThemeScreen()));
+                        }),
+                    const CustomDivider(),
+                    BlocBuilder<LoginBloc, LoginState>(
+                      builder: (context, state) {
+                        return ItemProfile(
+                          leftIcon: Icons.logout,
+                          label: "Log Out",
+                          onPress: () {
+                            BlocProvider.of<LoginBloc>(context)
+                                .add(const ButtonLogoutPressed());
+                          },
+                          color: Colors.grey.withOpacity(0.8),
+                        );
                       },
                     ),
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  Text(
-                    "${state.user.firstName} ${state.user.lastName}",
-                    style: const TextStyle(
-                        fontSize: 20, fontWeight: FontWeight.w600),
-                  ),
-                  const SizedBox(
-                    height: 4,
-                  ),
-                  Text(state.user.phoneNum,
-                      style: const TextStyle(
-                        fontSize: 16,
-                      )),
-                  const SizedBox(
-                    height: 50,
-                  ),
-                  ItemProfile(
-                      leftIcon: Icons.lock,
-                      label: "Change Password",
-                      onPress: () {
-                        Navigator.pushNamed(context, AppRoutes.changePassWord);
-                      }),
-                  const CustomDivider(),
-                  ItemProfile(
-                      leftIcon: Icons.edit,
-                      label: "Theme Setting",
-                      onPress: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => ThemeScreen()));
-                      }),
-                  const CustomDivider(),
-                  BlocBuilder<LoginBloc, LoginState>(
-                    builder: (context, state) {
-                      return ItemProfile(
-                        leftIcon: Icons.logout,
-                        label: "Log Out",
-                        onPress: () {
-                          BlocProvider.of<LoginBloc>(context)
-                              .add(const ButtonLogoutPressed());
-                        },
-                        color: Colors.grey.withOpacity(0.8),
-                      );
-                    },
-                  ),
-                ],
+                  ],
+                ),
               ),
             );
           } else {
