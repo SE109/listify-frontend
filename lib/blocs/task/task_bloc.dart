@@ -368,7 +368,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
 
     await dio.post('/gtask', data: {"name": event.name});
 
-    add(TaskReloadTaskEvent());
+    add(TaskLoadEvent());
   }
 
   FutureOr<void> _onCompleteSubTask(
