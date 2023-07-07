@@ -81,6 +81,25 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
               currentGTask: currentState.currentGTask,
               gTaskSelected: currentState.gTaskSelected),
         );
+      } else if (currentState.gTaskSelected != 'Today') {
+        final response = await dio.get(
+          '/gtask',
+        );
+
+        List<GTask> gTasks = (response.data['data'] as List)
+            .map((e) => GTask.fromJson(e))
+            .toList();
+
+        final resultList = gTasks
+            .firstWhere((element) => element.name == currentState.gTaskSelected)
+            .taskList;
+        emit(
+          currentState.copyWith(
+              gTasks: gTasks,
+              tasksDisplay: resultList,
+              currentGTask: currentState.currentGTask,
+              gTaskSelected: currentState.gTaskSelected),
+        );
       } else {
         emit(
           currentState.copyWith(

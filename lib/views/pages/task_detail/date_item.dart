@@ -25,7 +25,9 @@ class _DateItemState extends State<DateItem> {
       context: context,
       initialEntryMode: DatePickerEntryMode.calendarOnly,
       initialDate: date == null ? DateTime.now() : date!,
-      firstDate: DateTime.now().subtract(Duration(days: 0)),
+      firstDate: date == null || date!.day >= DateTime.now().day
+          ? DateTime.now().subtract(Duration(days: 0))
+          : date!,
       lastDate: DateTime(3000),
     );
   }
@@ -45,41 +47,40 @@ class _DateItemState extends State<DateItem> {
       ),
       child: Row(
         children: [
-          BlocBuilder<TaskBloc, TaskState>(
-            builder: (context, state) {
-              if (state is TaskLoaded) {
-                return InkWell(
-                    onTap: () async {
-                      var date1 = await _showDatePicker(context);
-
-                      if (date1 == null) {
-                        return;
-                      }
-
-                      date = date1;
-
-                      setState(() {});
-                      state.currentTask =
-                          state.currentTask!.copyWith(toDate: date1);
-                    },
-                    child: const Icon(Icons.today_rounded));
-              } else {
-                return Container();
-              }
-            },
-          ),
+          Icon(Icons.today_rounded),
           const SizedBox(width: 16),
           date != null
-              ? InputChip(
-                  label: Text(
-                    FormatUtils.formatTaskDetailDateTime(date!),
-                    style: Theme.of(context).textTheme.labelLarge,
-                    textAlign: TextAlign.center,
-                  ),
-                  onDeleted: () {
-                    setState(() {
-                      date = null;
-                    });
+              ? BlocBuilder<TaskBloc, TaskState>(
+                  builder: (context, state) {
+                    if (state is TaskLoaded) {
+                      return InputChip(
+                        onSelected: (value) async {
+                          var date1 = await _showDatePicker(context);
+
+                          if (date1 == null) {
+                            return;
+                          }
+
+                          date = date1;
+
+                          setState(() {});
+                          state.currentTask =
+                              state.currentTask!.copyWith(toDate: date1);
+                        },
+                        label: Text(
+                          FormatUtils.formatTaskDetailDateTime(date!),
+                          style: Theme.of(context).textTheme.labelLarge,
+                          textAlign: TextAlign.center,
+                        ),
+                        onDeleted: () {
+                          setState(() {
+                            date = null;
+                          });
+                        },
+                      );
+                    } else {
+                      return const SizedBox();
+                    }
                   },
                 )
               : BlocBuilder<TaskBloc, TaskState>(
