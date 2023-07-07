@@ -6,8 +6,19 @@ import '../../../blocs/user/user_bloc.dart';
 import '../../../routes/app_routes.dart';
 import '../settings/theme_screen.dart';
 
-class ProfilePage extends StatelessWidget {
+class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
+
+  @override
+  State<ProfilePage> createState() => _ProfilePageState();
+}
+
+class _ProfilePageState extends State<ProfilePage> {
+  @override
+  void initState() {
+    BlocProvider.of<UserBloc>(context).add(const GetInfo());
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -106,7 +117,10 @@ class EditableCircleAvatar extends StatelessWidget {
   final VoidCallback onPressed;
 
   const EditableCircleAvatar(
-      {super.key, required this.imageUrl, required this.size, required this.onPressed});
+      {super.key,
+      required this.imageUrl,
+      required this.size,
+      required this.onPressed});
 
   @override
   Widget build(BuildContext context) {
@@ -173,9 +187,9 @@ class ItemProfile extends StatelessWidget {
                   Text(
                     label,
                     style: const TextStyle(
-                        fontWeight: FontWeight.w500,
-                        fontSize: 16,
-                        ),
+                      fontWeight: FontWeight.w500,
+                      fontSize: 16,
+                    ),
                   ),
                 ],
               ),

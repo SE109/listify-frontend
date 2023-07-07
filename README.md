@@ -1,16 +1,33 @@
-# listify
+# Listify
 
-A new Flutter project.
+This repository contains the source code for "Listify", an application built using the Flutter framework.
+
+## Previous Git Repository
+
+The previous Git repository, referred to as "OldGitRepo", can be found at the following location: [OldGitRepo](https://github.com/hanhkiet/done.git). Please note that this repository is no longer actively maintained or supported.
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+To get started with this Flutter application, follow the steps below:
 
-A few resources to get you started if this is your first Flutter project:
+1. Ensure that you have Flutter installed. If not, refer to the [Flutter Installation Guide](https://flutter.dev/docs/get-started/install) for instructions on how to set it up.
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+2. Clone this repository:
+```bash
+   git clone https://github.com/SE109/listify-frontend.git
+```
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+3. Run app:
+
+- Navigate to the cloned repository:
+```bash
+   cd listify
+```
+- Install the dependencies:
+```bash
+   flutter pub get
+```
+- Run the application:
+```bash
+   flutter run
+```

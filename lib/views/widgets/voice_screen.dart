@@ -50,12 +50,14 @@ class _VoiceScreenState extends State<VoiceScreen> {
     context.read<VoiceBloc>().add(VoiceLoadByTask(task: widget.task));
     initRecorder();
   }
+
   @override
   void dispose() {
     super.dispose();
     recorder.closeRecorder();
     audioPlayer.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -112,7 +114,7 @@ class _VoiceScreenState extends State<VoiceScreen> {
       color: Colors.grey[300],
       height: recorder.isRecording ? 120 : 70,
       child: SingleChildScrollView(
-        padding:  EdgeInsets.only(top:  recorder.isRecording ?  15 : 0),
+        padding: EdgeInsets.only(top: recorder.isRecording ? 15 : 0),
         child: Center(
           child: Column(
             mainAxisSize: MainAxisSize.max,
@@ -356,14 +358,17 @@ class _VoiceScreenState extends State<VoiceScreen> {
       },
     );
   }
-  
+
   emptyWidget() {
     return Center(
-      child: Column(
-
-        children:  [
-        SizedBox(height: MediaQuery.of(context).size.height * 0.2,),
-        const Icon(Icons.mic_off_sharp , size: 100,),
+      child: Column(children: [
+        SizedBox(
+          height: MediaQuery.of(context).size.height * 0.2,
+        ),
+        const Icon(
+          Icons.mic_off_sharp,
+          size: 100,
+        ),
         const Text('No records found')
       ]),
     );
