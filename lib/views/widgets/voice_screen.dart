@@ -70,7 +70,7 @@ class _VoiceScreenState extends State<VoiceScreen> {
     final status = await Permission.microphone.request();
 
     if (status != PermissionStatus.granted) {
-      throw ('microphone request failed');
+      Navigator.pop(context);
     }
     await recorder.openRecorder();
     isReadyRecord = true;
