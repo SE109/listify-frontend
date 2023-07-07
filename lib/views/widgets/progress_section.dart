@@ -81,7 +81,7 @@ class _ProgressSectionState extends State<ProgressSection> {
             return const Column(children: [
               SizedBox(
                 height: 250,
-              ),
+              ), 
               Text('No tasks yet')
             ]);
           }
