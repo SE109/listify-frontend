@@ -55,9 +55,9 @@ class _ProgressSectionState extends State<ProgressSection> {
           print('-----------group ne');
 
           List<MyTask> taskDisplay = state.tasksDisplay
-            ..sort((a, b) => b.fromDate.compareTo(a.fromDate));
+            ..sort((a, b) => b.toDate.compareTo(a.toDate));
 
-          print(taskDisplay);
+          // print(taskDisplay);
 
           var groupByDate = groupBy(taskDisplay,
               (obj) => obj.toDate.toUtc().toString().substring(0, 10));
@@ -67,7 +67,7 @@ class _ProgressSectionState extends State<ProgressSection> {
           groupByDate.forEach((date, list) {
             // Header
             dates.add(date);
-            // print('${date}:');
+            print('${date}:');
 
             // // Group
             // list.forEach((listItem) {
@@ -77,6 +77,14 @@ class _ProgressSectionState extends State<ProgressSection> {
             // // day section divider
             // print('\naaa');
           });
+          if (groupByDate.length == 0) {
+            return const Column(children: [
+              SizedBox(
+                height: 250,
+              ), 
+              Text('No tasks yet') 
+            ]);
+          }
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

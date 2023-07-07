@@ -6,10 +6,11 @@ class Voice {
   final String name;
   final String file;
 
-  Voice({required this.id, required this.taskId, required this.name,
+  Voice(
+      {required this.id,
+      required this.taskId,
+      required this.name,
       required this.file});
-
-
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
@@ -20,17 +21,14 @@ class Voice {
     return data;
   }
 
-
-
   factory Voice.fromJson(Map<String, dynamic> map) {
     return Voice(
       id: map['id'] as int,
-      taskId: map['taskId'] as int,
+      taskId: map['taskId'] == null ? 1 : 1,
       name: map['name'] as String,
       file: map['file'] as String,
     );
   }
-
 
   Voice copyWith({
     int? id,
